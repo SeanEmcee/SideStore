@@ -8,6 +8,7 @@ struct RefreshWithoutDataTogglesIntent: AppIntent {
     static var authenticationPolicy: IntentAuthenticationPolicy = .alwaysAllowed
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> {
+        debugLog("[PreparedRefresh] Refresh Apps Without Data Toggles invoked. Cellular data will not be changed.")
         let token = try await PreparedRefreshManager.shared.prepare()
         return .result(value: await PreparedRefreshManager.shared.install(token: token))
     }

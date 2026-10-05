@@ -714,6 +714,15 @@ private extension MyAppsViewController
     {
         let group = AppManager.shared.refresh(installedApps, presentingViewController: self, group: self.isRefreshingAllApps ? self.refreshGroup : nil)
         group.completionHandler = { (results) in
+            // Background refresh records its own attempt; this callback belongs only to My Apps.
+            let attemptError = results.values.compactMap { $0.error }.first
+            let attemptResult: Result<[String: Result<InstalledApp, Error>], Error> = attemptError.map { .failure($0) } ?? .success([:])
+            let historyContext = DatabaseManager.shared.persistentContainer.newBackgroundContext()
+            historyContext.perform {
+                _ = RefreshAttempt(identifier: UUID().uuidString, result: attemptResult, context: historyContext)
+                do { try historyContext.save() }
+                catch { debugLog("[MyApps] Failed to save refresh attempt: \(error.localizedDescription)") }
+            }
             DispatchQueue.main.async {
                 let failures = results.compactMapValues { (result) -> Error? in
                     switch result
