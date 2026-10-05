@@ -99,6 +99,16 @@ def patch_minimuxer(root, framework):
             }
         }''')
     path = root / "DeviceGateway/idevice/IdeviceGateway.swift"
+    replace(path, "    private var handshake: OpaquePointer? = nil",
+            "    private var handshake: OpaquePointer? = nil\n    private var connectionBinding: DeviceSocketBinding.Binding? = nil")
+    replace(path, "    public override func invalidateConnection() {",
+            "    public override func invalidateConnection() {\n        connectionBinding = nil")
+    replace(path, "    private func ensureRPConnection() throws {", '''    private func ensureRPConnection() throws {
+        let binding = deviceEndpointIp.flatMap { DeviceSocketBinding.current(for: $0) }
+        // Do not reuse a tunnel created under a different interface policy.
+        if connectionBinding != binding { invalidateConnection() }''')
+    replace(path, '        debugLog("[IdeviceGateway] ensureRPConnection() tunnel_create_rppairing succeeded,',
+            '        connectionBinding = binding\n        debugLog("[IdeviceGateway] ensureRPConnection() tunnel_create_rppairing succeeded,')
     old = '''                err = tunnel_create_rppairing_with_options(
                     sockaddrPtr,
                     sockaddrLen,
@@ -110,7 +120,7 @@ def patch_minimuxer(root, framework):
                     &adapter,
                     &handshake
                 )'''
-    new = '''                if let binding = DeviceSocketBinding.current(for: deviceEndpointIp) {
+    new = '''                if let binding = binding {
                     debugLog("[VPNBound] gateway: interface=\\(binding.interfaceName), source=\\(binding.localIP), target=\\(deviceEndpointIp):\\(rpPort)")
                     binding.localIP.withCString { localPtr in
                         err = tunnel_create_rppairing_with_options_bound(

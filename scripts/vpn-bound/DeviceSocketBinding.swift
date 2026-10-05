@@ -3,7 +3,7 @@ import Darwin
 
 /// Scoped to prepared installation. Ordinary refresh never activates this policy.
 public enum DeviceSocketBinding {
-    public struct Binding: Sendable {
+    public struct Binding: Sendable, Equatable {
         public let interfaceName: String
         public let interfaceIndex: UInt32
         public let localIP: String
