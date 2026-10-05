@@ -11,6 +11,7 @@ import UIKit
 import Minimuxer
 
 public final class CellularRefreshManager: @unchecked Sendable {
+    @TaskLocal static var isExternallyManaged = false
     public static let shared = CellularRefreshManager()
 
     private let lock = NSLock()
@@ -174,6 +175,7 @@ public final class CellularRefreshManager: @unchecked Sendable {
     // public apis
     @discardableResult
     public func turnOffDataIfNeeded(addOnDelay: TimeInterval = 0) async -> Bool {
+        guard !Self.isExternallyManaged else { return false }
         guard isSupported && isEnabled else { return false }
         guard !didTurnOffData else { return false }
 
@@ -195,6 +197,7 @@ public final class CellularRefreshManager: @unchecked Sendable {
 
     @discardableResult
     public func turnOnDataIfNeeded(addOnDelay: TimeInterval = 0) async -> Bool {
+        guard !Self.isExternallyManaged else { return false }
         guard didTurnOffData else { return false }
 
         let success = await turnOnData()

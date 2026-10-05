@@ -12,6 +12,14 @@ import AppIntents
 public struct ShortcutsProvider: AppShortcutsProvider
 {
     public static var appShortcuts: [AppShortcut] {
+        #if !os(tvOS)
+        AppShortcut(intent: PrepareAppRefreshIntent(),
+                    phrases: ["Prepare refresh with \(.applicationName)"],
+                    shortTitle: "Prepare App Refresh", systemImageName: "arrow.down.doc")
+        AppShortcut(intent: InstallPreparedRefreshIntent(),
+                    phrases: ["Install prepared refresh with \(.applicationName)"],
+                    shortTitle: "Install Prepared Refresh", systemImageName: "checkmark.seal")
+        #endif
         AppShortcut(intent: RefreshAllAppsIntent(),
                     phrases: [
                         "Refresh \(.applicationName)",
