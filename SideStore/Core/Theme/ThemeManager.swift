@@ -166,8 +166,11 @@ public final class ThemeManager: ObservableObject {
     public func applyToVisibleInterface() {
         guard let window = UIApplication.alt_shared?.alt_keyWindow else { return }
         window.tintColor = primaryColor
-        if #available(iOS 17.0, tvOS 17.0, *), window.traitOverrides[InterfaceThemeRevision.self] != revision {
-            window.traitOverrides[InterfaceThemeRevision.self] = revision
+        if #available(iOS 17.0, tvOS 17.0, *) {
+            // Reading an override that has not been set raises a UIKit exception on first launch.
+            if !window.traitOverrides.contains(InterfaceThemeRevision.self) || window.traitOverrides[InterfaceThemeRevision.self] != revision {
+                window.traitOverrides[InterfaceThemeRevision.self] = revision
+            }
         }
         apply(to: window)
     }

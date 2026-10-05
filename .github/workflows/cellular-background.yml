@@ -25,6 +25,8 @@ jobs:
           /tmp/prepared-refresh-tests
       - name: Install packaging tools
         run: brew install ldid xcbeautify
+      - name: Test first-launch theme application in UIKit
+        run: python3 scripts/tests/theme-launch-smoke.py
       - name: Build and package
         shell: bash
         run: |
