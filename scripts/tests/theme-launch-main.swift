@@ -46,7 +46,14 @@ final class ThemeLaunchScene: UIResponder, UIWindowSceneDelegate {
         theme.reset(.background)
         theme.applyToVisibleInterface()
         precondition(view.backgroundColor == .systemBackground)
-        print("THEME_LAUNCH_PASS: first activation, repeat application, color change, and reset")
+        let result = "THEME_LAUNCH_PASS: first activation, repeat application, color change, and reset"
+        // simctl can miss console output when this small test exits immediately.
+        // The fresh simulator's result file is written only after all assertions pass.
+        let resultURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("theme-launch-result.txt")
+        do { try Data(result.utf8).write(to: resultURL, options: .atomic) }
+        catch { fatalError("Could not save theme launch result: \(error)") }
+        print(result)
         exit(0)
     }
 }

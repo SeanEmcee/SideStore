@@ -4,6 +4,7 @@ import pathlib
 import plistlib
 import subprocess
 import tempfile
+import time
 
 
 def run(*args, timeout=120):
@@ -47,7 +48,16 @@ try:
         output = run("xcrun", "simctl", "launch", "--console", device,
                      info["CFBundleIdentifier"], timeout=60)
         print(output)
-        assert "THEME_LAUNCH_PASS" in output, "UIKit theme launch test did not complete"
+        container = pathlib.Path(run("xcrun", "simctl", "get_app_container", device,
+                                     info["CFBundleIdentifier"], "data").strip())
+        result = container / "Documents" / "theme-launch-result.txt"
+        deadline = time.monotonic() + 20
+        while not result.is_file() and time.monotonic() < deadline:
+            time.sleep(0.2)
+        assert result.is_file(), "UIKit theme launch test did not complete"
+        message = result.read_text()
+        assert message.startswith("THEME_LAUNCH_PASS:"), message
+        print(message)
 finally:
     subprocess.run(["xcrun", "simctl", "shutdown", device], check=False)
     subprocess.run(["xcrun", "simctl", "delete", device], check=False)
