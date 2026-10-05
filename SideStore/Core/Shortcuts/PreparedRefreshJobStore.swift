@@ -6,12 +6,36 @@ struct PreparedRefreshJob: Codable, Sendable {
         let resignedBundleIdentifier: String
         let certificateSerial: String
         let profiles: [String: Data]
+
+        /// Compare the actual signing certificate again before installing a prepared profile.
+        /// The database's optional custom-certificate override is not an installed identity.
+        func matchesInstalledIdentity(bundleIdentifier: String, resignedBundleIdentifier: String,
+                                      signingCertificateSerial: String?) -> Bool {
+            self.bundleIdentifier == bundleIdentifier && self.resignedBundleIdentifier == resignedBundleIdentifier &&
+                !certificateSerial.isEmpty && signingCertificateSerial == certificateSerial
+        }
     }
 
     let version: Int
     let createdAt: Date
     let teamIdentifier: String
     let apps: [App]
+
+    /// Upstream keys profiles by the customized target ID. Store them using database IDs so
+    /// the main app and its extensions can be looked up consistently during installation.
+    static func normalizedProfileKeys<Value>(_ profiles: [String: Value], effectiveBundleIdentifier: String,
+                                             bundleIdentifier: String) throws -> [String: Value] {
+        guard !effectiveBundleIdentifier.isEmpty, !bundleIdentifier.isEmpty else { throw PreparedRefreshError.invalidJob }
+        var normalized: [String: Value] = [:]
+        for (key, value) in profiles {
+            guard key == effectiveBundleIdentifier || key.hasPrefix(effectiveBundleIdentifier + ".") else {
+                throw PreparedRefreshError.configuration("A provisioning profile was returned for an unexpected app identity.")
+            }
+            let normalizedKey = bundleIdentifier + key.dropFirst(effectiveBundleIdentifier.count)
+            normalized[normalizedKey] = value
+        }
+        return normalized
+    }
 }
 
 enum PreparedRefreshError: LocalizedError {

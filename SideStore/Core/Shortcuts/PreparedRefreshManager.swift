@@ -55,20 +55,32 @@ actor PreparedRefreshManager {
             // No re-signing, certificate revocation, device registration, or installation here.
             try await UpdateAppCertificateOperation(context: context).execute()
             try await VerifyCertificateOperation(context: context, willResign: false).execute()
-            let profiles = try await FetchProvisioningProfilesOperation(context: context).execute()
-            let snapshot = await db.perform { (app.bundleIdentifier, app.resignedBundleIdentifier, app.certificateSerialNumber ?? "") }
-            guard let main = profiles[snapshot.0], main.bundleIdentifier == snapshot.1,
-                  !snapshot.2.isEmpty else {
-                throw PreparedRefreshError.configuration("The installed app identity changed or its certificate is unavailable. Refresh it normally first.")
+            let fetchedProfiles = try await FetchProvisioningProfilesOperation(context: context).execute()
+            let snapshot = await db.perform {
+                // certificateSerialNumber is an optional custom override, not the app's actual signer.
+                // Use the same certificate source as upstream's verification-only refresh operation.
+                (bundleIdentifier: app.bundleIdentifier, resignedBundleIdentifier: app.resignedBundleIdentifier,
+                 name: app.name, certificateSerial: CertificateManager.shared.getSigningCertificate(for: app)?.serialNumber)
+            }
+            guard let certificateSerial = snapshot.certificateSerial, !certificateSerial.isEmpty else {
+                throw PreparedRefreshError.configuration("The signing certificate for \(snapshot.name) could not be read. Reinstall that app over its existing installation on Wi-Fi to restore its cached certificate.")
+            }
+            let profiles = try PreparedRefreshJob.normalizedProfileKeys(fetchedProfiles,
+                effectiveBundleIdentifier: context.targetBundleIdentifier, bundleIdentifier: snapshot.bundleIdentifier)
+            guard let main = profiles[snapshot.bundleIdentifier] else {
+                throw PreparedRefreshError.configuration("No main provisioning profile was returned for \(snapshot.name).")
+            }
+            guard main.bundleIdentifier == snapshot.resignedBundleIdentifier else {
+                throw PreparedRefreshError.configuration("The downloaded profile for \(snapshot.name) targets a different installed app identity. Check that app's bundle ID and profile customizations.")
             }
             for profile in profiles.values {
                 guard profile.teamIdentifier == team.identifier, profile.expirationDate > Date(),
-                      profile.certificates.contains(where: { $0.serialNumber == snapshot.2 }) else {
-                    throw PreparedRefreshError.configuration("A downloaded profile does not match the installed signing certificate and account.")
+                      profile.certificates.contains(where: { $0.serialNumber == certificateSerial }) else {
+                    throw PreparedRefreshError.configuration("A downloaded profile for \(snapshot.name) does not match its installed signing certificate and account.")
                 }
             }
-            entries.append(.init(bundleIdentifier: snapshot.0, resignedBundleIdentifier: snapshot.1,
-                                 certificateSerial: snapshot.2, profiles: profiles.mapValues(\.data)))
+            entries.append(.init(bundleIdentifier: snapshot.bundleIdentifier, resignedBundleIdentifier: snapshot.resignedBundleIdentifier,
+                                 certificateSerial: certificateSerial, profiles: profiles.mapValues(\.data)))
         }
         let token = try store.save(.init(version: 1, createdAt: Date(), teamIdentifier: team.identifier, apps: entries))
         debugLog("[PreparedRefresh] Prepared profiles for \(entries.count) app(s). No device installation performed.")
@@ -116,8 +128,10 @@ actor PreparedRefreshManager {
                 try Task.checkCancellation()
                 let app = try await db.perform { () throws -> InstalledApp in
                     guard let app = InstalledApp.first(satisfying: NSPredicate(format: "bundleIdentifier == %@", entry.bundleIdentifier), in: db),
-                          app.isActive, app.resignedBundleIdentifier == entry.resignedBundleIdentifier,
-                          app.certificateSerialNumber == entry.certificateSerial else {
+                          app.isActive,
+                          entry.matchesInstalledIdentity(bundleIdentifier: app.bundleIdentifier,
+                              resignedBundleIdentifier: app.resignedBundleIdentifier,
+                              signingCertificateSerial: CertificateManager.shared.getSigningCertificate(for: app)?.serialNumber) else {
                         throw PreparedRefreshError.invalidJob
                     }
                     return app
