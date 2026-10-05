@@ -8,6 +8,8 @@ The GitHub Actions artifact contains an ad-hoc signed IPA for a sideloading tool
 
 Install it over the existing SideStore using the same account and bundle identifier. The base bundle identifier remains `com.SideStore.SideStore`; a signing tool may append your team identifier. An update with the same installed identifier replaces SideStore and uses its existing app slot. A different identifier installs a separate app and needs another slot. Keep the existing app and its data until the replacement is confirmed. Do not reset the pairing file or revoke certificates as an installation step.
 
+Before using SideStore itself to install the update, restore the known-working Wi-Fi connection: original sing-box reflection profile, Include All Networks off, Device IP `10.7.0.1`, RemotePair port `49152`, Use Local VPN off, and Preferred Protocol Remote Pairing. Fully close SideStore from the app switcher and reopen it to load the preference; check that Active Protocol is rppairing. Test a normal refresh before installing the IPA. Connecting to Wi-Fi alone does not undo the experimental endpoint or protocol settings. If refresh succeeds but IPA installation fails connecting to AFC, investigate the full app-transfer connection separately rather than uninstalling SideStore.
+
 Open SideStore once after installing, confirm your account and pairing configuration, and run a normal Wi-Fi refresh. The new prepared actions require cached app bundles, a valid existing signing certificate, and completed device registration. They renew provisioning profiles; they do not re-sign apps to a replacement certificate or import an app managed only by AltStore.
 
 ## Theme Manager
