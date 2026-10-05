@@ -196,10 +196,12 @@ public final class ThemeManager: ObservableObject {
             }
         }
         if let field = view as? UITextField, let original = state.inputText {
-            field.textColor = customColor(for: .text) ?? original
+            let target = customColor(for: .text) ?? original
+            if field.textColor != target { field.textColor = target }
         }
         if let field = view as? UITextView, let original = state.inputText {
-            field.textColor = customColor(for: .text) ?? original
+            let target = customColor(for: .text) ?? original
+            if field.textColor != target { field.textColor = target }
         }
         if let border = state.border {
             let target = customColor(for: .separators) ?? border
