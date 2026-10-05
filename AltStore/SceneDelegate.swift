@@ -46,6 +46,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate
 
     func sceneDidBecomeActive(_ scene: UIScene)
     {
+        ThemeManager.shared.applyToVisibleInterface()
         debugLog("[SceneDelegate] sceneDidBecomeActive() invoked")
         defer {
             // dump sidebackup logs if any

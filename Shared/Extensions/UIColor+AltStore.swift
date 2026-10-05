@@ -30,13 +30,25 @@ public extension UIColor
     static let refreshYellow = namedColor("RefreshYellow")!
     static let refreshGreen = namedColor("RefreshGreen")!
 
-    static let altBackground = namedColor("Background")!
+    static var altBackground: UIColor {
+        #if WIDGET_EXTENSION
+        return namedColor("Background")!
+        #else
+        return ThemeManager.shared.backgroundColor ?? namedColor("Background")!
+        #endif
+    }
 
     static var settingsBackground: UIColor {
+        #if !WIDGET_EXTENSION
+        if let color = ThemeManager.shared.backgroundColor { return color }
+        #endif
         return namedColor("SettingsBackground")!
     }
 
     static var settingsHighlighted: UIColor {
+        #if !WIDGET_EXTENSION
+        if let color = ThemeManager.shared.cardColor { return color }
+        #endif
         return namedColor("SettingsHighlighted")!
     }
 

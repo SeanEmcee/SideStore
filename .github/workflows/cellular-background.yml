@@ -30,7 +30,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p build/logs
-          make build MARKETING_VERSION=0.7.0-bg.${{ github.run_number }} 2>&1 | tee build/logs/build.log | xcbeautify --renderer github-actions
+          make -B build MARKETING_VERSION=0.7.0-bg.${{ github.run_number }} 2>&1 | tee build/logs/build.log | xcbeautify --renderer github-actions
           make fakesign ipa
           shasum -a 256 SideStore.ipa > SHA256SUMS.txt
       - name: Check IPA contents

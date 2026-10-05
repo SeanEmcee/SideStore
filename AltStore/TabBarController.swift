@@ -62,6 +62,11 @@ final class TabBarController: UITabBarController
             self.performSegue(withIdentifier: identifier, sender: sender)
         }
     }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        ThemeManager.shared.applyToVisibleInterface()
+    }
     
     override func performSegue(withIdentifier identifier: String, sender: Any?)
     {

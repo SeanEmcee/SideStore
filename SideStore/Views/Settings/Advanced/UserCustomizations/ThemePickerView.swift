@@ -23,6 +23,8 @@ struct ThemePickerView: View {
                 // Section 1: LIVE INTERFACE PREVIEW
                 previewSection
 
+                interfaceColorsSection
+
                 // Section 2: FULL SPECTRUM COLOR WHEEL & SELECTION
                 #if !os(tvOS)
                 colorWheelSection
@@ -229,7 +231,7 @@ struct ThemePickerView: View {
 
     private var resetButtonSection: some View {
         SwiftUI.Button(action: {
-            themeManager.resetToDefault()
+            themeManager.resetInterfaceColors()
             selectedColor = Color(uiColor: themeManager.primaryColor)
         }) {
             HStack {
@@ -261,5 +263,76 @@ struct ThemePickerView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
+    }
+
+    private var interfaceColorsSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("INTERFACE COLORS")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundColor(.white.opacity(0.6))
+            Text("Choose a color or enter a six-digit hex code. Changes are saved immediately. Status colors remain distinct.")
+                .font(.footnote)
+                .foregroundColor(.white.opacity(0.8))
+            ForEach(ThemeManager.ColorRole.allCases) { role in
+                InterfaceColorRow(role: role)
+            }
+        }
+    }
+}
+
+private struct InterfaceColorRow: View {
+    let role: ThemeManager.ColorRole
+    @ObservedObject private var theme = ThemeManager.shared
+    @State private var hex = ""
+    @State private var invalidHex = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text(role.title).font(.headline)
+                Spacer()
+                #if !os(tvOS)
+                ColorPicker(role.title, selection: Binding(
+                    get: { Color(uiColor: theme.color(for: role)) },
+                    set: { value in
+                        let color = UIColor(value)
+                        hex = "#" + color.hexString
+                        invalidHex = !theme.setHex(hex, for: role)
+                    }), supportsOpacity: false).labelsHidden()
+                #endif
+            }
+            HStack {
+                TextField("#RRGGBB", text: $hex)
+                    .font(.system(.body, design: .monospaced))
+                    #if !os(tvOS)
+                    .textInputAutocapitalization(.characters)
+                    .autocorrectionDisabled()
+                    #endif
+                    .onSubmit { apply() }
+                SwiftUI.Button("Apply") { apply() }
+                SwiftUI.Button("Reset") {
+                    theme.reset(role)
+                    updateHex()
+                }
+            }
+            if invalidHex {
+                Text("Enter exactly six hex digits, such as #172A3A.").font(.caption).foregroundColor(.red)
+            }
+        }
+        .foregroundColor(Color(uiColor: theme.textColor))
+        .padding(16)
+        .background(Color(uiColor: theme.cardColor ?? .white.withAlphaComponent(0.15)))
+        .cornerRadius(14)
+        .onAppear { updateHex() }
+    }
+
+    private func updateHex() {
+        hex = "#" + theme.color(for: role).resolvedColor(with: UITraitCollection.current).hexString
+        invalidHex = false
+    }
+
+    private func apply() {
+        invalidHex = !theme.setHex(hex, for: role)
+        if !invalidHex { updateHex() }
     }
 }
