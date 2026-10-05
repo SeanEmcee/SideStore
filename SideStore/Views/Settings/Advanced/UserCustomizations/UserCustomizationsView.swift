@@ -10,8 +10,8 @@ import SwiftUI
 import Minimuxer
 
 private extension Color {
-    static let settingsRowBackground = Color.white.opacity(0.15)
-    static let settingsDivider = Color.white.opacity(0.15)
+    static var settingsRowBackground: Color { .interfaceCard }
+    static var settingsDivider: Color { .interfaceDivider }
 }
 
 struct UserCustomizationsView: View {
@@ -84,14 +84,14 @@ struct UserCustomizationsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("APPEARANCE & THEMES")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(Color.white.opacity(0.6))
+                        .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                         .padding(.horizontal, 16)
                     
                     NavigationLink(destination: ThemePickerView()) {
                         HStack {
                             Text("Theme Manager")
                                 .font(.system(size: 17, weight: .bold))
-                                .foregroundColor(.white)
+                                .foregroundColor(Color.interfaceText)
                             Spacer()
                             HStack(spacing: 6) {
                                 Circle()
@@ -99,7 +99,7 @@ struct UserCustomizationsView: View {
                                     .frame(width: 14, height: 14)
                                 Image(systemName: "chevron.right")
                                     .font(.system(size: 14, weight: .semibold))
-                                    .foregroundColor(Color.white.opacity(0.4))
+                                    .foregroundColor(Color.interfaceSecondaryText(opacity: 0.4))
                             }
                         }
                         .padding(.horizontal, 16)
@@ -113,7 +113,7 @@ struct UserCustomizationsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("ANISETTE")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(Color.white.opacity(0.6))
+                        .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                         .padding(.horizontal, 16)
                     
                     VStack(spacing: 0) {
@@ -135,11 +135,11 @@ struct UserCustomizationsView: View {
                             HStack {
                                 Text("Anisette Client Configuration")
                                     .font(.system(size: 17, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Spacer()
                                 Image(systemName: "chevron.right")
                                     .font(.system(size: 14, weight: .semibold))
-                                    .foregroundColor(Color.white.opacity(0.4))
+                                    .foregroundColor(Color.interfaceSecondaryText(opacity: 0.4))
                             }
                             .padding(.horizontal, 16)
                             .frame(height: 50)
@@ -157,7 +157,7 @@ struct UserCustomizationsView: View {
                                         .foregroundColor(.red)
                                     Text("Clear local Anisette provisioning data from Keychain")
                                         .font(.system(size: 12, weight: .regular))
-                                        .foregroundColor(Color.white.opacity(0.6))
+                                        .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                                 }
                                 Spacer()
                                 Image(systemName: "trash")
@@ -177,7 +177,7 @@ struct UserCustomizationsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("SIDESIGN")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(Color.white.opacity(0.6))
+                        .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                         .padding(.horizontal, 16)
                     
                     VStack(spacing: 0) {
@@ -185,11 +185,11 @@ struct UserCustomizationsView: View {
                             HStack {
                                 Text("SideSign Client Configuration")
                                     .font(.system(size: 17, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Spacer()
                                 Image(systemName: "chevron.right")
                                     .font(.system(size: 14, weight: .semibold))
-                                    .foregroundColor(Color.white.opacity(0.4))
+                                    .foregroundColor(Color.interfaceSecondaryText(opacity: 0.4))
                             }
                             .padding(.horizontal, 16)
                             .frame(height: 50)
@@ -206,7 +206,7 @@ struct UserCustomizationsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("APP VERIFICATION")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(Color.white.opacity(0.6))
+                        .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                         .padding(.horizontal, 16)
                     
                     VStack(spacing: 0) {
@@ -290,7 +290,7 @@ struct UserCustomizationsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("EMPROXY & WIREGUARD")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(Color.white.opacity(0.6))
+                        .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                         .padding(.horizontal, 16)
                     
                     VStack(spacing: 0) {
@@ -298,12 +298,12 @@ struct UserCustomizationsView: View {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text("Export WireGuard Config")
                                     .font(.system(size: 17, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                     .multilineTextAlignment(.leading)
                                     .fixedSize(horizontal: false, vertical: true)
                                 Text("Exports SideStore.conf to import into WireGuard VPN app")
                                     .font(.system(size: 12, weight: .regular))
-                                    .foregroundColor(Color.white.opacity(0.6))
+                                    .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                                     .multilineTextAlignment(.leading)
                                     .fixedSize(horizontal: false, vertical: true)
                             }
@@ -311,7 +311,7 @@ struct UserCustomizationsView: View {
                             SwiftUI.Button(action: { exportWireGuardConfig() }) {
                                 Image(systemName: "square.and.arrow.up")
                                     .font(.system(size: 22, weight: .semibold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                     .frame(width: 55, alignment: .center)
                             }
                         }
@@ -344,7 +344,7 @@ struct UserCustomizationsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("MINIMUXER BACKEND")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(Color.white.opacity(0.6))
+                        .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                         .padding(.horizontal, 16)
                     
                     VStack(spacing: 0) {
@@ -362,7 +362,7 @@ struct UserCustomizationsView: View {
                                 HStack {
                                     Text(backend.rawValue)
                                         .font(.system(size: 17, weight: .bold))
-                                        .foregroundColor(.white)
+                                        .foregroundColor(Color.interfaceText)
                                     Spacer()
                                     if selectedBackend == backend {
                                         Image(systemName: "checkmark")
@@ -386,7 +386,7 @@ struct UserCustomizationsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("BACKGROUND SERVICE")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(Color.white.opacity(0.6))
+                        .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                         .padding(.horizontal, 16)
                     
                     VStack(spacing: 0) {
@@ -536,12 +536,12 @@ struct UserCustomizationsView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .font(.system(size: 17, weight: .bold))
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.interfaceText)
                     .fixedSize(horizontal: false, vertical: true)
                 if let subtitle = subtitle {
                     Text(subtitle)
                         .font(.system(size: 12, weight: .regular))
-                        .foregroundColor(Color.white.opacity(0.6))
+                        .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
@@ -568,12 +568,12 @@ struct UserCustomizationsView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
                         .font(.system(size: 17, weight: .bold))
-                        .foregroundColor(.white)
+                        .foregroundColor(Color.interfaceText)
                         .fixedSize(horizontal: false, vertical: true)
                     if let subtitle = subtitle {
                         Text(subtitle)
                             .font(.system(size: 12, weight: .regular))
-                            .foregroundColor(Color.white.opacity(0.6))
+                            .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                             .fixedSize(horizontal: false, vertical: true)
                     }
                 }
@@ -599,7 +599,7 @@ struct UserCustomizationsView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("CELLULAR REFRESH")
                 .font(.system(size: 13, weight: .semibold))
-                .foregroundColor(Color.white.opacity(0.6))
+                .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                 .padding(.horizontal, 16)
 
             VStack(spacing: 0) {
@@ -782,7 +782,7 @@ struct UserCustomizationsView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("GENERAL")
                 .font(.system(size: 13, weight: .semibold))
-                .foregroundColor(Color.white.opacity(0.6))
+                .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                 .padding(.horizontal, 16)
             
             VStack(spacing: 0) {
@@ -811,7 +811,7 @@ struct UserCustomizationsView: View {
                 HStack {
                     Text("Customize Extensions")
                         .font(.system(size: 17, weight: .bold))
-                        .foregroundColor(.white)
+                        .foregroundColor(Color.interfaceText)
                     Spacer()
                     Picker("", selection: customizeAppExtensionsBinding) {
                         ForEach(AppExtensionCustomization.allCases) { (option: AppExtensionCustomization) in
@@ -830,7 +830,7 @@ struct UserCustomizationsView: View {
                 HStack {
                     Text("Default Import Mode")
                         .font(.system(size: 17, weight: .bold))
-                        .foregroundColor(.white)
+                        .foregroundColor(Color.interfaceText)
                     Spacer()
                     Picker("", selection: appImportSourceModeBinding) {
                         ForEach(AppImportSourceMode.allCases) { (option: AppImportSourceMode) in

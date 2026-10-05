@@ -11,8 +11,8 @@ import UniformTypeIdentifiers
 import SideSign
 
 private extension Color {
-    static let settingsRowBackground = Color.white.opacity(0.15)
-    static let settingsDivider = Color.white.opacity(0.15)
+    static var settingsRowBackground: Color { .interfaceCard }
+    static var settingsDivider: Color { .interfaceDivider }
 }
 
 @MainActor
@@ -313,7 +313,7 @@ struct SideSignConfigurationView: View {
                             Spacer()
                             Label("Save Overrides", systemImage: "checkmark.circle.fill")
                                 .font(.system(size: 17, weight: .bold))
-                                .foregroundColor(.white)
+                                .foregroundColor(Color.interfaceText)
                             Spacer()
                         }
                         .frame(height: 50)
@@ -328,7 +328,7 @@ struct SideSignConfigurationView: View {
                         VStack(spacing: 12) {
                             TextEditor(text: $viewModel.rawEditableJSON)
                                 .font(.system(size: 12, design: .monospaced))
-                                .foregroundColor(.white)
+                                .foregroundColor(Color.interfaceText)
                                 .frame(minHeight: 320)
                                 .padding(8)
                                 .background(Color.white.opacity(0.06))
@@ -343,7 +343,7 @@ struct SideSignConfigurationView: View {
                                     Spacer()
                                     Label("Save Raw JSON", systemImage: "square.and.arrow.down.fill")
                                         .font(.system(size: 16, weight: .bold))
-                                        .foregroundColor(.white)
+                                        .foregroundColor(Color.interfaceText)
                                     Spacer()
                                 }
                                 .frame(height: 48)
@@ -384,11 +384,11 @@ struct SideSignConfigurationView: View {
                             HStack {
                                 Label("Import Config JSON", systemImage: "square.and.arrow.down")
                                     .font(.system(size: 16, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Spacer()
                                 Image(systemName: "chevron.right")
                                     .font(.system(size: 14, weight: .semibold))
-                                    .foregroundColor(Color.white.opacity(0.4))
+                                    .foregroundColor(Color.interfaceSecondaryText(opacity: 0.4))
                             }
                             .padding(.horizontal, 16)
                             .frame(height: 50)
@@ -406,11 +406,11 @@ struct SideSignConfigurationView: View {
                             HStack {
                                 Label("Export Config JSON", systemImage: "square.and.arrow.up")
                                     .font(.system(size: 16, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Spacer()
                                 Image(systemName: "chevron.right")
                                     .font(.system(size: 14, weight: .semibold))
-                                    .foregroundColor(Color.white.opacity(0.4))
+                                    .foregroundColor(Color.interfaceSecondaryText(opacity: 0.4))
                             }
                             .padding(.horizontal, 16)
                             .frame(height: 50)
@@ -495,7 +495,7 @@ struct SideSignConfigurationView: View {
     private func sectionHeader(_ title: String) -> some View {
         Text(title)
             .font(.system(size: 13, weight: .semibold))
-            .foregroundColor(Color.white.opacity(0.6))
+            .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
             .padding(.horizontal, 16)
     }
 
@@ -510,18 +510,18 @@ struct SideSignConfigurationView: View {
             HStack {
                 Text(title)
                     .font(.system(size: 15, weight: .bold))
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.interfaceText)
                 Spacer()
                 Text(headerKey)
                     .font(.system(size: 11, design: .monospaced))
-                    .foregroundColor(Color.white.opacity(0.45))
+                    .foregroundColor(Color.interfaceSecondaryText(opacity: 0.45))
             }
 
             if isMultiline {
                 #if !os(tvOS)
                 TextEditor(text: text)
                     .font(.system(size: 12, design: .monospaced))
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.interfaceText)
                     .frame(minHeight: 64)
                     .padding(6)
                     .background(Color.white.opacity(0.06))
@@ -529,7 +529,7 @@ struct SideSignConfigurationView: View {
                 #else
                 TextField(placeholder, text: text)
                     .font(.system(size: 13, design: .monospaced))
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.interfaceText)
                     .padding(8)
                     .background(Color.white.opacity(0.06))
                     .cornerRadius(8)
@@ -537,7 +537,7 @@ struct SideSignConfigurationView: View {
             } else {
                 TextField(placeholder, text: text)
                     .font(.system(size: 13, design: .monospaced))
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.interfaceText)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
                     .padding(8)

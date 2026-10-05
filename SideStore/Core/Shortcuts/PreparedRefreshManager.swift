@@ -131,7 +131,8 @@ actor PreparedRefreshManager {
                     try Task.checkCancellation()
                     try await minimuxer.core.installProvisioningProfile(profile: profile.data)
                 }
-                // Advance expiry only after all device service calls acknowledge installation.
+                try await verifyInstalledProfiles(Array(profiles.values))
+                // Advance expiry only after the device returns the newly installed profile UUIDs.
                 try await db.perform {
                     app.update(provisioningProfile: main)
                     for ext in app.appExtensions {
@@ -142,12 +143,37 @@ actor PreparedRefreshManager {
                 completed += 1
             }
             await recordAttempt(db: db, error: nil)
-            return "Refreshed \(completed) app(s). Profiles installed through the local device connection."
+            return "Refreshed \(completed) app(s). Installed profiles verified through the local device connection."
         } catch {
             let db = DatabaseManager.shared.persistentContainer.newBackgroundContext()
             await recordAttempt(db: db, error: error)
             debugLog("[PreparedRefresh] Installation failed after \(completed) app(s): \(error.localizedDescription)")
             return "Refresh failed after \(completed) app(s): \(error.localizedDescription). Prepare a new refresh to retry."
+        }
+    }
+
+    private func verifyInstalledProfiles(_ expected: [ALTProvisioningProfile]) async throws {
+        let directory = FileManager.default.applicationSupportDirectory
+            .appendingPathComponent("RefreshVerification-" + UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true,
+            attributes: [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication])
+        defer { try? FileManager.default.removeItem(at: directory) }
+        var excludedDirectory = directory
+        var values = URLResourceValues()
+        values.isExcludedFromBackup = true
+        try excludedDirectory.setResourceValues(values)
+        let path = try await minimuxer.core.dumpProfiles(docsPath: directory.path, mode: .raw)
+        let files = try FileManager.default.contentsOfDirectory(at: URL(fileURLWithPath: path), includingPropertiesForKeys: nil)
+        let installed = files.filter { $0.pathExtension == "mobileprovision" }.compactMap { file in
+            try? ALTProvisioningProfile(data: Data(contentsOf: file))
+        }
+        for profile in expected {
+            guard installed.contains(where: {
+                $0.uuid == profile.uuid && $0.bundleIdentifier == profile.bundleIdentifier &&
+                $0.teamIdentifier == profile.teamIdentifier && $0.expirationDate == profile.expirationDate
+            }) else {
+                throw PreparedRefreshError.configuration("The device did not return a newly installed profile. Expiry was not advanced.")
+            }
         }
     }
 

@@ -43,7 +43,7 @@ struct WirelessPairTargetDialog: View {
                     } label: {
                         Image(systemName: "xmark")
                             .font(.system(size: 13, weight: .bold))
-                            .foregroundColor(.white)
+                            .foregroundColor(Color.interfaceText)
                             .frame(width: 30, height: 30)
                             .background(Color.white.opacity(0.18))
                             .clipShape(Circle())

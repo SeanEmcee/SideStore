@@ -2,8 +2,8 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 private extension Color {
-    static let settingsRowBackground = Color.white.opacity(0.15)
-    static let settingsDivider = Color.white.opacity(0.15)
+    static var settingsRowBackground: Color { .interfaceCard }
+    static var settingsDivider: Color { .interfaceDivider }
 }
 
 struct BackupAndRestoreView: View {
@@ -28,7 +28,7 @@ struct BackupAndRestoreView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("ACCOUNT, CERTIFICATE, & PAIRING DATA")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(Color.white.opacity(0.6))
+                        .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                         .padding(.horizontal, 16)
                     
                     VStack(spacing: 0) {
@@ -38,10 +38,10 @@ struct BackupAndRestoreView: View {
                             HStack(spacing: 12) {
                                 Image(systemName: "square.and.arrow.down")
                                     .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Text("Import Account")
                                     .font(.system(size: 17, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Spacer()
                             }
                             .padding(.horizontal, 16)
@@ -56,10 +56,10 @@ struct BackupAndRestoreView: View {
                             HStack(spacing: 12) {
                                 Image(systemName: "square.and.arrow.up")
                                     .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Text("Export Account")
                                     .font(.system(size: 17, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Spacer()
                             }
                             .padding(.horizontal, 16)
@@ -75,7 +75,7 @@ struct BackupAndRestoreView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("SOURCES DATA")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(Color.white.opacity(0.6))
+                        .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                         .padding(.horizontal, 16)
                     
                     VStack(spacing: 0) {
@@ -85,10 +85,10 @@ struct BackupAndRestoreView: View {
                             HStack(spacing: 12) {
                                 Image(systemName: "square.and.arrow.down")
                                     .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Text("Import Sources")
                                     .font(.system(size: 17, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Spacer()
                             }
                             .padding(.horizontal, 16)
@@ -103,10 +103,10 @@ struct BackupAndRestoreView: View {
                             HStack(spacing: 12) {
                                 Image(systemName: "square.and.arrow.up")
                                     .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Text("Export Sources")
                                     .font(.system(size: 17, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Spacer()
                             }
                             .padding(.horizontal, 16)

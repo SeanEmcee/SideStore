@@ -1032,7 +1032,7 @@ struct AppInfoToastView: View {
                     .font(.subheadline)
                     .padding()
                     .background(Color.black.opacity(0.85))
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.interfaceText)
                     .cornerRadius(10)
                     .shadow(radius: 5)
                     .transition(.slide)

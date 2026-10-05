@@ -43,7 +43,7 @@ struct SignableCertificateRowView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(cert.machineName ?? cert.name)
                     .font(.headline)
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.interfaceText)
                 
                 let certName = cert.name
                 if cert.machineName != nil {
@@ -209,7 +209,7 @@ final class SignableCertificatesListViewController: UITableViewController {
             cell.contentConfiguration = UIHostingConfiguration {
                 SignableCertificateRowView(cert: cert, appName: installedApp.name, appCertSerial: installedApp.certificateSerialNumber, viewModel: viewModel)
             }
-            .background(Color.white.opacity(0.15))
+            .background(Color.interfaceCard)
         } else {
             let certName = cert.name
             let machineName = cert.machineName ?? "N/A"

@@ -471,7 +471,7 @@ public struct InfoPlistCustomizationCoreView: View {
                     .frame(width: 36, height: 36)
                 Image(systemName: "slider.horizontal.3")
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.interfaceText)
             }
 
             VStack(alignment: .leading, spacing: 2) {
@@ -883,7 +883,7 @@ public struct InfoPlistCustomizationCoreView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 12)
                     .background(Color.blue)
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.interfaceText)
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             }
             .buttonStyle(.plain)

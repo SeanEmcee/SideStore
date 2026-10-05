@@ -18,7 +18,7 @@ public extension UIColor
         #if WIDGET_EXTENSION
         return defaultAltPrimary
         #else
-        return ThemeManager.shared.primaryColor
+        return ThemeManager.dynamicColor(.accent, fallback: defaultAltPrimary)
         #endif
     }
     static let defaultAltPrimary = namedColor("Primary")!
@@ -34,22 +34,24 @@ public extension UIColor
         #if WIDGET_EXTENSION
         return namedColor("Background")!
         #else
-        return ThemeManager.shared.backgroundColor ?? namedColor("Background")!
+        return ThemeManager.dynamicColor(.background, fallback: namedColor("Background")!)
         #endif
     }
 
     static var settingsBackground: UIColor {
         #if !WIDGET_EXTENSION
-        if let color = ThemeManager.shared.backgroundColor { return color }
-        #endif
+        return ThemeManager.dynamicColor(.background, fallback: namedColor("SettingsBackground")!)
+        #else
         return namedColor("SettingsBackground")!
+        #endif
     }
 
     static var settingsHighlighted: UIColor {
         #if !WIDGET_EXTENSION
-        if let color = ThemeManager.shared.cardColor { return color }
-        #endif
+        return ThemeManager.dynamicColor(.cards, fallback: namedColor("SettingsHighlighted")!)
+        #else
         return namedColor("SettingsHighlighted")!
+        #endif
     }
 
     static let altInvertedPrimary = namedColor("SettingsHighlighted")!

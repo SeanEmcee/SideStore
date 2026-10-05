@@ -18,8 +18,8 @@ import SideSign
 import MinimuxerCommon
 
 private extension Color {
-    static let settingsRowBackground = Color.white.opacity(0.15)
-    static let settingsDivider = Color.white.opacity(0.15)
+    static var settingsRowBackground: Color { .interfaceCard }
+    static var settingsDivider: Color { .interfaceDivider }
 }
 
 struct DeveloperOptionsView: View {
@@ -54,7 +54,7 @@ struct DeveloperOptionsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("LOGGING & DIAGNOSTICS")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(Color.white.opacity(0.6))
+                        .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                         .padding(.horizontal, 16)
                     
                     VStack(spacing: 0) {
@@ -144,11 +144,11 @@ struct DeveloperOptionsView: View {
                             HStack {
                                 Text("Operations Logging Control")
                                     .font(.system(size: 17, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Spacer()
                                 Image(systemName: "chevron.right")
                                     .font(.system(size: 14, weight: .semibold))
-                                    .foregroundColor(Color.white.opacity(0.4))
+                                    .foregroundColor(Color.interfaceSecondaryText(opacity: 0.4))
                             }
                             .padding(.horizontal, 16)
                             .frame(height: 50)
@@ -167,7 +167,7 @@ struct DeveloperOptionsView: View {
                     #endif
                     Text(title)
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(Color.white.opacity(0.6))
+                        .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                         .padding(.horizontal, 16)
                     
                     VStack(spacing: 0) {
@@ -175,7 +175,7 @@ struct DeveloperOptionsView: View {
                             HStack(spacing: 12) {
                                 Image(systemName: "arrow.clockwise")
                                     .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
 
                                 #if !os(tvOS)
                                 let title = "Reload All Widgets"
@@ -184,7 +184,7 @@ struct DeveloperOptionsView: View {
                                 #endif
                                 Text(title)
                                     .font(.system(size: 17, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Spacer()
                             }
                             .padding(.horizontal, 16)
@@ -197,7 +197,7 @@ struct DeveloperOptionsView: View {
                             HStack(spacing: 12) {
                                 Image(systemName: "arrow.triangle.2.circlepath")
                                     .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 
                                 #if !os(tvOS)
                                 let title = "Rotate Widget Log"
@@ -206,7 +206,7 @@ struct DeveloperOptionsView: View {
                                 #endif
                                 Text(title)
                                     .font(.system(size: 17, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Spacer()
                             }
                             .padding(.horizontal, 16)
@@ -221,7 +221,7 @@ struct DeveloperOptionsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("DATABASE OPTIONS")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(Color.white.opacity(0.6))
+                        .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                         .padding(.horizontal, 16)
                     
                     VStack(spacing: 0) {
@@ -229,10 +229,10 @@ struct DeveloperOptionsView: View {
                             HStack(spacing: 12) {
                                 Image(systemName: "square.and.arrow.up")
                                     .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Text("Export Database")
                                     .font(.system(size: 17, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Spacer()
                                 if isExportingDB {
                                     ProgressView()
@@ -310,7 +310,7 @@ struct DeveloperOptionsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("WIREGUARD CONFIGURATION")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(Color.white.opacity(0.6))
+                        .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                         .padding(.horizontal, 16)
                     
                     VStack(spacing: 0) {
@@ -318,10 +318,10 @@ struct DeveloperOptionsView: View {
                             HStack(spacing: 12) {
                                 Image(systemName: "play.circle")
                                     .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Text("Start EMProxy")
                                     .font(.system(size: 17, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Spacer()
                             }
                             .padding(.horizontal, 16)
@@ -334,10 +334,10 @@ struct DeveloperOptionsView: View {
                             HStack(spacing: 12) {
                                 Image(systemName: "stop.circle")
                                     .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Text("Stop EMProxy")
                                     .font(.system(size: 17, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Spacer()
                             }
                             .padding(.horizontal, 16)
@@ -361,7 +361,7 @@ struct DeveloperOptionsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("BACKGROUND SERVICE")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(Color.white.opacity(0.6))
+                        .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                         .padding(.horizontal, 16)
                     
                     VStack(spacing: 0) {
@@ -369,10 +369,10 @@ struct DeveloperOptionsView: View {
                             HStack(spacing: 12) {
                                 Image(systemName: "play.circle")
                                     .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Text("Start Background Service")
                                     .font(.system(size: 17, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Spacer()
                             }
                             .padding(.horizontal, 16)
@@ -385,10 +385,10 @@ struct DeveloperOptionsView: View {
                             HStack(spacing: 12) {
                                 Image(systemName: "stop.circle")
                                     .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Text("Stop Background Service")
                                     .font(.system(size: 17, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Spacer()
                             }
                             .padding(.horizontal, 16)
@@ -403,21 +403,21 @@ struct DeveloperOptionsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("DEVICE (TCP) PROBE TIMEOUT")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(Color.white.opacity(0.6))
+                        .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                         .padding(.horizontal, 16)
                     
                     VStack(spacing: 0) {
                         HStack(spacing: 12) {
                             Text("Timeout (ms)")
                                 .font(.system(size: 17, weight: .bold))
-                                .foregroundColor(.white)
+                                .foregroundColor(Color.interfaceText)
                             
                             Spacer()
                             
                             TextField("ms", text: $tcpProbeTimeoutText)
                                 .keyboardType(.numberPad)
                                 .multilineTextAlignment(.trailing)
-                                .foregroundColor(.white)
+                                .foregroundColor(Color.interfaceText)
                                 .font(.system(size: 17))
                                 .frame(width: 90)
                                 .onChange(of: tcpProbeTimeoutText) { newValue in
@@ -443,10 +443,10 @@ struct DeveloperOptionsView: View {
                             HStack(spacing: 12) {
                                 Image(systemName: "arrow.counterclockwise")
                                     .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Text("Use Default (\(AppConstants.Minimuxer.defaultTCPProbeTimeoutMs) ms)")
                                     .font(.system(size: 17, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Spacer()
                             }
                             .padding(.horizontal, 16)
@@ -461,7 +461,7 @@ struct DeveloperOptionsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("CONNECTION CONFIG")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(Color.white.opacity(0.6))
+                        .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                         .padding(.horizontal, 16)
                     
                     VStack(spacing: 0) {
@@ -492,7 +492,7 @@ struct DeveloperOptionsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("ACCOUNT MANAGEMENT")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(Color.white.opacity(0.6))
+                        .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                         .padding(.horizontal, 16)
                     
                     VStack(spacing: 0) {
@@ -500,10 +500,10 @@ struct DeveloperOptionsView: View {
                             HStack(spacing: 12) {
                                 Image(systemName: "square.and.arrow.down")
                                     .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Text("Import Account JSON")
                                     .font(.system(size: 17, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Spacer()
                             }
                             .padding(.horizontal, 16)
@@ -528,10 +528,10 @@ struct DeveloperOptionsView: View {
                             HStack(spacing: 12) {
                                 Image(systemName: "square.and.arrow.up")
                                     .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Text("Export Account JSON")
                                     .font(.system(size: 17, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Spacer()
                             }
                             .padding(.horizontal, 16)
@@ -546,7 +546,7 @@ struct DeveloperOptionsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("PROVISIONING PROFILES")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(Color.white.opacity(0.6))
+                        .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                         .padding(.horizontal, 16)
 
                     VStack(spacing: 0) {
@@ -558,10 +558,10 @@ struct DeveloperOptionsView: View {
                             HStack(spacing: 12) {
                                 Image(systemName: "arrow.down.doc")
                                     .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Text("Dump Provisioning Profiles")
                                     .font(.system(size: 17, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Spacer()
                                 if isDumpingProfiles {
                                     ProgressView()
@@ -580,7 +580,7 @@ struct DeveloperOptionsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("ONBOARDING")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(Color.white.opacity(0.6))
+                        .foregroundColor(Color.interfaceSecondaryText(opacity: 0.6))
                         .padding(.horizontal, 16)
 
                     VStack(spacing: 0) {
@@ -588,14 +588,14 @@ struct DeveloperOptionsView: View {
                             HStack(spacing: 12) {
                                 Image(systemName: "sparkles")
                                     .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Text("Replay Onboarding")
                                     .font(.system(size: 17, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Spacer()
                                 Image(systemName: "chevron.right")
                                     .font(.system(size: 14, weight: .semibold))
-                                    .foregroundColor(Color.white.opacity(0.4))
+                                    .foregroundColor(Color.interfaceSecondaryText(opacity: 0.4))
                             }
                             .padding(.horizontal, 16)
                             .frame(height: 50)
@@ -619,10 +619,10 @@ struct DeveloperOptionsView: View {
                             HStack(spacing: 12) {
                                 Image(systemName: "arrow.counterclockwise")
                                     .font(.system(size: 18, weight: .semibold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Text("Reset Onboarding State")
                                     .font(.system(size: 17, weight: .bold))
-                                    .foregroundColor(.white)
+                                    .foregroundColor(Color.interfaceText)
                                 Spacer()
                             }
                             .padding(.horizontal, 16)
@@ -790,7 +790,7 @@ struct DeveloperOptionsView: View {
         HStack {
             Text(title)
                 .font(.system(size: 17, weight: .bold))
-                .foregroundColor(.white)
+                .foregroundColor(Color.interfaceText)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer()
             Toggle("", isOn: isOn)

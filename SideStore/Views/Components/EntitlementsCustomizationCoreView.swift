@@ -195,7 +195,7 @@ public struct EntitlementsCustomizationCoreView: View {
                     .frame(maxWidth: .infinity)
                     .frame(height: 44)
                     .background(Color.accentColor)
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.interfaceText)
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             }
         }
@@ -612,7 +612,7 @@ public struct EntitlementsCustomizationCoreView: View {
                     Text("Add")
                         .font(.system(size: 13, weight: .bold))
                 }
-                .foregroundColor(.white)
+                .foregroundColor(Color.interfaceText)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
                 .background(Color.accentColor)

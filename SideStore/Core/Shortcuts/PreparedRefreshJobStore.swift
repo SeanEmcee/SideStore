@@ -39,7 +39,7 @@ struct PreparedRefreshJobStore {
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         #if os(iOS)
         // Scheduled refresh after first unlock must remain able to read this file while locked.
-        try FileManager.default.setAttributes([.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication], atPath: directory.path)
+        try FileManager.default.setAttributes([.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication], ofItemAtPath: directory.path)
         #endif
         var excludedDirectory = directory
         var values = URLResourceValues()
@@ -48,6 +48,7 @@ struct PreparedRefreshJobStore {
         try removeExpired(now: now)
         let token = UUID().uuidString
         let data = try JSONEncoder().encode(job)
+        guard data.count <= 32 * 1024 * 1024 else { throw PreparedRefreshError.invalidJob }
         #if os(iOS)
         try data.write(to: url(for: token), options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
         #else
@@ -78,7 +79,9 @@ struct PreparedRefreshJobStore {
     private func validate(_ job: PreparedRefreshJob, now: Date) throws {
         guard job.version == 1, !job.teamIdentifier.isEmpty, !job.apps.isEmpty,
               Set(job.apps.map(\.bundleIdentifier)).count == job.apps.count,
-              job.apps.allSatisfy({ !$0.profiles.isEmpty && !$0.certificateSerial.isEmpty && $0.profiles.values.allSatisfy { !$0.isEmpty } })
+              job.apps.allSatisfy({ !$0.bundleIdentifier.isEmpty && !$0.resignedBundleIdentifier.isEmpty &&
+                  $0.profiles[$0.bundleIdentifier] != nil && !$0.certificateSerial.isEmpty &&
+                  $0.profiles.values.allSatisfy { !$0.isEmpty } })
         else { throw PreparedRefreshError.invalidJob }
         let age = now.timeIntervalSince(job.createdAt)
         guard age >= -5, age < Self.lifetime else { throw PreparedRefreshError.expiredJob }

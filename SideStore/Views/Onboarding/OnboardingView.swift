@@ -161,7 +161,7 @@ private struct WelcomeStep: View {
             SwiftUI.Button(action: onNext) {
                 Text(NSLocalizedString("Get Started", comment: ""))
                     .font(.headline)
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.interfaceText)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
                     .background(Color.accentColor)
@@ -278,7 +278,7 @@ private struct PairingFileStep: View {
                 SwiftUI.Button(action: onNext) {
                     Text(NSLocalizedString("Continue", comment: ""))
                         .font(.headline)
-                        .foregroundColor(.white)
+                        .foregroundColor(Color.interfaceText)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
                         .background(hasPairingFile ? Color.accentColor : Color.gray.opacity(0.4))
@@ -445,7 +445,7 @@ private struct LocalDevVPNStep: View {
                 SwiftUI.Button(action: onNext) {
                     Text(NSLocalizedString("Continue", comment: ""))
                         .font(.headline)
-                        .foregroundColor(.white)
+                        .foregroundColor(Color.interfaceText)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
                         .background(isConnected ? Color.accentColor : Color.gray.opacity(0.4))
@@ -595,7 +595,7 @@ private struct AppleIDStep: View {
                         Text(NSLocalizedString("Sign In with Apple ID", comment: ""))
                     }
                     .font(.headline)
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.interfaceText)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
                     .background(Color.accentColor)
@@ -620,7 +620,7 @@ private struct AppleIDStep: View {
                 SwiftUI.Button(action: onNext) {
                     Text(NSLocalizedString("Continue", comment: ""))
                         .font(.headline)
-                        .foregroundColor(.white)
+                        .foregroundColor(Color.interfaceText)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
                         .background(isAuthenticated ? Color.accentColor : Color.gray.opacity(0.4))
@@ -704,7 +704,7 @@ private struct CompleteStep: View {
             SwiftUI.Button(action: onFinish) {
                 Text(NSLocalizedString("Open SideStore", comment: ""))
                     .font(.headline)
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.interfaceText)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 14)
                     .background(Color.accentColor)

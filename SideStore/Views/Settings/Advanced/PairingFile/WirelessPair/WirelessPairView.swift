@@ -63,7 +63,7 @@ struct WirelessPairView: View {
                         }
                     }
                     .font(.system(size: 36, weight: .semibold))
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.interfaceText)
                 }
                 .frame(height: 220)
                 .padding(.top, 20)
@@ -126,7 +126,7 @@ struct WirelessPairView: View {
                         }
                     }
                     .font(.headline)
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.interfaceText)
                     .frame(maxWidth: .infinity)
                     .frame(height: 56)
                     .background(viewModel.isAdvertising ? Color.red : Color.accentColor)

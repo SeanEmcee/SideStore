@@ -363,7 +363,7 @@ struct SideJITServerConfigView: View {
     private var copiedToastView: some View {
         Text("Copied to Clipboard")
             .font(.subheadline.weight(.medium))
-            .foregroundColor(.white)
+            .foregroundColor(Color.interfaceText)
             .padding(.horizontal, 20)
             .padding(.vertical, 10)
             .background(Capsule().fill(Color.accentColor))

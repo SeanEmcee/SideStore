@@ -877,7 +877,7 @@ struct ServiceDetailView: View {
                     HStack(spacing: 8) {
                         Text(resolved.type.contains("_tcp") ? "TCP" : "UDP")
                             .font(.system(size: 11, weight: .bold, design: .rounded))
-                            .foregroundColor(.white)
+                            .foregroundColor(Color.interfaceText)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 3)
                             .background(Capsule().fill(resolved.type.contains("_tcp") ? Color.blue : Color.orange))
@@ -1096,7 +1096,7 @@ struct ServiceDetailView: View {
     private var copiedBanner: some View {
         Text("Copied to Clipboard")
             .font(.subheadline.weight(.medium))
-            .foregroundColor(.white)
+            .foregroundColor(Color.interfaceText)
             .padding(.horizontal, 20)
             .padding(.vertical, 10)
             .background(

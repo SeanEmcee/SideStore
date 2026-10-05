@@ -8,6 +8,13 @@
 
 import UIKit
 import Combine
+import SwiftUI
+
+@available(iOS 17.0, tvOS 17.0, *)
+private struct InterfaceThemeRevision: UITraitDefinition {
+    static let defaultValue = 0
+    static let affectsColorAppearance = true
+}
 
 public struct ThemePreset: Identifiable, Equatable {
     public let id: String
@@ -35,7 +42,7 @@ public final class ThemeManager: ObservableObject {
 
     private static let userDefaultsKey = "userCustomThemeHex"
     public enum ColorRole: String, CaseIterable, Identifiable {
-        case accent, background, cards, text
+        case accent, background, cards, text, secondaryText, navigation, tabBar, separators
         public var id: String { rawValue }
         public var title: String {
             switch self {
@@ -43,12 +50,17 @@ public final class ThemeManager: ObservableObject {
             case .background: return "Screen Background"
             case .cards: return "Card Background"
             case .text: return "Text"
+            case .secondaryText: return "Secondary Text"
+            case .navigation: return "Navigation Bar"
+            case .tabBar: return "Tab Bar"
+            case .separators: return "Dividers & Borders"
             }
         }
     }
 
     @Published private var customColors: [String: String]
     private let viewColors = NSMapTable<UIView, ViewColors>.weakToStrongObjects()
+    private var revision = 0
 
     public var backgroundColor: UIColor? { customColor(for: .background) }
     public var cardColor: UIColor? { customColor(for: .cards) }
@@ -60,7 +72,25 @@ public final class ThemeManager: ObservableObject {
     }
 
     public func color(for role: ColorRole) -> UIColor {
-        customColor(for: role) ?? (role == .background ? UIColor(named: "SettingsBackground")! : role == .cards ? .white.withAlphaComponent(0.15) : .white)
+        if let color = customColor(for: role) { return color }
+        switch role {
+        case .accent: return primaryColor
+        case .background, .navigation, .tabBar: return UIColor(named: "SettingsBackground")!
+        case .cards, .separators: return .white.withAlphaComponent(0.15)
+        case .text: return .white
+        case .secondaryText: return .white.withAlphaComponent(0.65)
+        }
+    }
+
+    /// Dynamic tokens also refresh already-created SwiftUI views when the theme changes.
+    public static func dynamicColor(_ role: ColorRole, fallback: UIColor) -> UIColor {
+        UIColor { traits in
+            if #available(iOS 17.0, tvOS 17.0, *) { _ = traits[InterfaceThemeRevision.self] }
+            if role == .secondaryText, shared.customColor(for: role) == nil, let text = shared.customColor(for: .text) {
+                return text.withAlphaComponent(fallback.cgColor.alpha).resolvedColor(with: traits)
+            }
+            return (shared.customColor(for: role) ?? fallback).resolvedColor(with: traits)
+        }
     }
 
     /// Accept exactly six hex digits, with an optional leading #; never silently accept a partial parse.
@@ -101,6 +131,7 @@ public final class ThemeManager: ObservableObject {
         didSet {
             UserDefaults.standard.set(primaryColor.hexString, forKey: Self.userDefaultsKey)
             NotificationCenter.default.post(name: Self.themeDidChangeNotification, object: primaryColor)
+            revision += 1
             DispatchQueue.main.async {
                 if let window = UIApplication.alt_shared?.alt_keyWindow {
                     window.tintColor = self.primaryColor
@@ -126,6 +157,7 @@ public final class ThemeManager: ObservableObject {
     }
 
     private func notifyInterfaceChange() {
+        revision += 1
         NotificationCenter.default.post(name: Self.themeDidChangeNotification, object: nil)
         DispatchQueue.main.async { self.applyToVisibleInterface() }
     }
@@ -134,6 +166,9 @@ public final class ThemeManager: ObservableObject {
     public func applyToVisibleInterface() {
         guard let window = UIApplication.alt_shared?.alt_keyWindow else { return }
         window.tintColor = primaryColor
+        if #available(iOS 17.0, tvOS 17.0, *), window.traitOverrides[InterfaceThemeRevision.self] != revision {
+            window.traitOverrides[InterfaceThemeRevision.self] = revision
+        }
         apply(to: window)
     }
 
@@ -148,26 +183,53 @@ public final class ThemeManager: ObservableObject {
             }
         }
         if let label = view as? UILabel, let original = state.text {
-            let target = customColor(for: .text)?.withAlphaComponent(original.cgColor.alpha) ?? original
+            let role: ColorRole = original.cgColor.alpha < 0.95 ? .secondaryText : .text
+            let target = customColor(for: role) ?? customColor(for: .text)?.withAlphaComponent(original.cgColor.alpha) ?? original
             if state.lastText == nil || label.textColor == state.lastText || label.textColor == original {
                 if label.textColor != target { label.textColor = target }
                 state.lastText = target
             }
         }
-        if let bar = view as? UINavigationBar, let color = backgroundColor {
-            let appearance = bar.standardAppearance.copy()
-            appearance.backgroundColor = color
-            if let text = customColor(for: .text) {
-                appearance.titleTextAttributes[.foregroundColor] = text
-                appearance.largeTitleTextAttributes[.foregroundColor] = text
+        applyBars(to: view, state: state)
+        for child in view.subviews { apply(to: child) }
+    }
+
+    private func applyBars(to view: UIView, state: ViewColors) {
+        guard state.lastRevision != revision else { return }
+        state.lastRevision = revision
+        if let bar = view as? UINavigationBar, let original = state.navigation {
+            func appearance(_ source: UINavigationBarAppearance) -> UINavigationBarAppearance {
+                let result = source.copy()
+                if let color = customColor(for: .navigation) ?? backgroundColor { result.backgroundColor = color }
+                if let text = customColor(for: .text) {
+                    result.titleTextAttributes[.foregroundColor] = text
+                    result.largeTitleTextAttributes[.foregroundColor] = text
+                }
+                return result
             }
-            // Only assign on an actual color change to avoid a layout feedback loop.
-            if bar.standardAppearance.backgroundColor != color {
-                bar.standardAppearance = appearance
-                bar.scrollEdgeAppearance = appearance
+            bar.standardAppearance = appearance(original)
+            let hasOverride = customColor(for: .navigation) != nil || backgroundColor != nil || customColor(for: .text) != nil
+            bar.scrollEdgeAppearance = state.navigationScroll.map(appearance) ?? (hasOverride ? appearance(original) : nil)
+            bar.compactAppearance = state.navigationCompact.map(appearance)
+        }
+        if let bar = view as? UITabBar, let original = state.tabBar {
+            func appearance(_ source: UITabBarAppearance) -> UITabBarAppearance {
+                let result = source.copy()
+                if let color = customColor(for: .tabBar) ?? backgroundColor { result.backgroundColor = color }
+                if let text = customColor(for: .secondaryText) ?? customColor(for: .text) {
+                    for item in [result.stackedLayoutAppearance, result.inlineLayoutAppearance, result.compactInlineLayoutAppearance] {
+                        item.normal.iconColor = text
+                        item.normal.titleTextAttributes[.foregroundColor] = text
+                    }
+                }
+                return result
+            }
+            bar.standardAppearance = appearance(original)
+            if #available(iOS 15.0, tvOS 15.0, *) {
+                let hasOverride = customColor(for: .tabBar) != nil || backgroundColor != nil || customColor(for: .text) != nil || customColor(for: .secondaryText) != nil
+                bar.scrollEdgeAppearance = state.tabBarScroll.map(appearance) ?? (hasOverride ? appearance(original) : nil)
             }
         }
-        for child in view.subviews { apply(to: child) }
     }
 
     private final class ViewColors {
@@ -176,8 +238,22 @@ public final class ThemeManager: ObservableObject {
         let text: UIColor?
         var lastBackground: UIColor?
         var lastText: UIColor?
+        var lastRevision: Int?
+        let navigation: UINavigationBarAppearance?
+        let navigationScroll: UINavigationBarAppearance?
+        let navigationCompact: UINavigationBarAppearance?
+        let tabBar: UITabBarAppearance?
+        let tabBarScroll: UITabBarAppearance?
 
         init(view: UIView) {
+            let nav = view as? UINavigationBar
+            navigation = nav?.standardAppearance.copy()
+            navigationScroll = nav?.scrollEdgeAppearance?.copy()
+            navigationCompact = nav?.compactAppearance?.copy()
+            let tab = view as? UITabBar
+            tabBar = tab?.standardAppearance.copy()
+            if #available(iOS 15.0, tvOS 15.0, *) { tabBarScroll = tab?.scrollEdgeAppearance?.copy() }
+            else { tabBarScroll = nil }
             let color = view.backgroundColor
             let screenColors = [UIColor(named: "Background"), UIColor(named: "SettingsBackground"), .systemBackground, .systemGroupedBackground].compactMap { $0 }
             let cardColors = [UIColor(named: "SettingsHighlighted"), .secondarySystemBackground, .secondarySystemGroupedBackground, .white.withAlphaComponent(0.15), .white.withAlphaComponent(0.25)].compactMap { $0 }
@@ -185,7 +261,7 @@ public final class ThemeManager: ObservableObject {
                 guard let value else { return false }
                 return colors.contains { value.resolvedColor(with: view.traitCollection) == $0.resolvedColor(with: view.traitCollection) }
             }
-            backgroundRole = matches(color, screenColors) ? .background : matches(color, cardColors) ? .cards : nil
+            backgroundRole = matches(color, screenColors) ? .background : matches(color, cardColors) ? (view.bounds.height > 0 && view.bounds.height <= 1 ? .separators : .cards) : nil
             background = backgroundRole != nil ? color : nil
             let labelColor = (view as? UILabel)?.textColor
             if let labelColor {
@@ -196,6 +272,15 @@ public final class ThemeManager: ObservableObject {
             } else { text = nil }
         }
     }
+}
+
+extension Color {
+    static var interfaceText: Color { Color(uiColor: ThemeManager.dynamicColor(.text, fallback: .white)) }
+    static func interfaceSecondaryText(opacity: Double = 0.65) -> Color {
+        Color(uiColor: ThemeManager.dynamicColor(.secondaryText, fallback: .white.withAlphaComponent(CGFloat(opacity))))
+    }
+    static var interfaceCard: Color { Color(uiColor: ThemeManager.dynamicColor(.cards, fallback: .white.withAlphaComponent(0.15))) }
+    static var interfaceDivider: Color { Color(uiColor: ThemeManager.dynamicColor(.separators, fallback: .white.withAlphaComponent(0.15))) }
 }
 
 public extension UIColor {
