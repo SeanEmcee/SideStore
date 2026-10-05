@@ -248,7 +248,7 @@ private struct StorageLocationRowView: View {
                     .font(.headline)
                 Text(location.subtitle)
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
             }
             
             Spacer()
@@ -291,30 +291,30 @@ private struct StorageExplorerFooterView: View {
                 HStack(spacing: 4) {
                     Text("App Storage Used:")
                         .font(.footnote.weight(.semibold))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                     Text(appStorageUsedString)
                         .font(.footnote.weight(.medium))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 }
             }
             if !freeHardwareSpaceString.isEmpty {
                 HStack(spacing: 4) {
                     Text("Available Space:")
                         .font(.footnote.weight(.semibold))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                     Text(freeHardwareSpaceString)
                         .font(.footnote.weight(.medium))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 }
             }
             if !totalHardwareSpaceString.isEmpty {
                 HStack(spacing: 4) {
                     Text("Total Space:")
                         .font(.footnote.weight(.semibold))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                     Text(totalHardwareSpaceString)
                         .font(.footnote.weight(.medium))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 }
             }
         }

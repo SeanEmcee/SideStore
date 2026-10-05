@@ -20,7 +20,7 @@ struct OnboardingView: View {
             #if !os(tvOS)
                 Color(.systemBackground).ignoresSafeArea()
             #else
-                Color.black.ignoresSafeArea()
+                Color(uiColor: ThemeManager.dynamicColor(.background, fallback: .black)).ignoresSafeArea()
             #endif
 
             VStack(spacing: 0) {
@@ -122,7 +122,7 @@ private struct WelcomeStep: View {
 
                 Text(NSLocalizedString("Sideload and refresh apps directly on your device, untethered from a computer.", comment: ""))
                     .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)
             }
@@ -185,7 +185,7 @@ private struct WelcomeStep: View {
                     .font(.headline)
                 Text(description)
                     .font(.footnote)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
             }
         }
     }
@@ -219,7 +219,7 @@ private struct PairingFileStep: View {
                     ProcessInfo.processInfo.platformName
                 ))
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
             }
@@ -230,7 +230,7 @@ private struct PairingFileStep: View {
                         .foregroundColor(.green)
                     Text(NSLocalizedString("Pairing file detected and loaded.", comment: ""))
                         .font(.footnote)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 }
                 .padding(.vertical, 4)
             }
@@ -290,7 +290,7 @@ private struct PairingFileStep: View {
                     SwiftUI.Button(action: onNext) {
                         Text(NSLocalizedString("Set Up Later", comment: ""))
                             .font(.footnote)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                     }
                 }
             }
@@ -377,7 +377,7 @@ private struct LocalDevVPNStep: View {
 
                 Text(NSLocalizedString("SideStore communicates with on-device services over a local loopback VPN. Enable LocalDevVPN before verifying.", comment: ""))
                     .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)
             }
@@ -388,7 +388,7 @@ private struct LocalDevVPNStep: View {
                         .foregroundColor(.green)
                     Text(NSLocalizedString("LocalDevVPN is connected.", comment: ""))
                         .font(.footnote)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 }
                 .padding(.vertical, 4)
             }
@@ -416,7 +416,7 @@ private struct LocalDevVPNStep: View {
                                 .foregroundColor(.orange)
                             Text(errorMessage)
                                 .font(.footnote)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                         }
                         .multilineTextAlignment(.center)
 
@@ -456,7 +456,7 @@ private struct LocalDevVPNStep: View {
                 SwiftUI.Button(action: onNext) {
                     Text(NSLocalizedString("Set Up Later", comment: ""))
                         .font(.footnote)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 }
             }
             .frame(maxWidth: 420)
@@ -548,7 +548,7 @@ private struct AppleIDStep: View {
 
                 Text(NSLocalizedString("SideStore requires an Apple ID to create development certificates and provisioning profiles for signing apps.", comment: ""))
                     .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)
             }
@@ -559,7 +559,7 @@ private struct AppleIDStep: View {
                         .foregroundColor(.green)
                     Text(AuthManager.shared.currentAppleID ?? NSLocalizedString("Signed in", comment: ""))
                         .font(.footnote)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 }
                 .padding(.vertical, 8)
             } else {
@@ -631,7 +631,7 @@ private struct AppleIDStep: View {
                 SwiftUI.Button(action: onNext) {
                     Text(NSLocalizedString("Set Up Later", comment: ""))
                         .font(.footnote)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 }
                 .disabled(isSigningIn)
             }
@@ -673,7 +673,7 @@ private struct CompleteStep: View {
                     ? NSLocalizedString("SideStore setup is complete. You can now install and refresh apps.", comment: "")
                     : NSLocalizedString("You can enter SideStore, but a pairing file is required before you can install or refresh apps.", comment: ""))
                     .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)
             }
@@ -739,7 +739,7 @@ private struct CompleteStep: View {
 
                     Text(warning)
                         .font(.caption2)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 }
             }
 

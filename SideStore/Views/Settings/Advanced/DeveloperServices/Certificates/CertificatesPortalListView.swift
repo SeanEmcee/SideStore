@@ -42,7 +42,7 @@ struct CertificatesPortalListView: View {
                         .padding(.vertical, 8)
                     } else {
                         Text(searchText.isEmpty ? "No certificates found on Developer Portal." : "No matching certificates found.")
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                             .font(.subheadline)
                     }
                 } else {
@@ -158,7 +158,7 @@ private struct CertificatePortalRow: View {
             if let machine = certificate.machineName {
                 Text(machine)
                     .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
             }
 
             Text("Serial: \(certificate.serialNumber)")

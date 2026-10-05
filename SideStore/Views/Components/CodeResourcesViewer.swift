@@ -93,14 +93,14 @@ struct CodeResourcesViewer: View {
                         if filteredRules.isEmpty {
                             Text("No rules matching '\(searchQuery)'")
                                 .font(.subheadline)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                         } else {
                             ForEach(filteredRules) { rule in
                                 VStack(alignment: .leading, spacing: 4) {
                                     HStack {
                                         Text(rule.pattern)
                                             .font(.system(size: 13, design: .monospaced))
-                                            .foregroundColor(.primary)
+                                            .foregroundColor(Color.interfacePrimaryLabel)
                                         Spacer()
                                         if rule.isOmitted {
                                             Text("Omit")
@@ -123,7 +123,7 @@ struct CodeResourcesViewer: View {
                                     if let w = rule.weight {
                                         Text("Weight: \(String(format: "%.1f", w))")
                                             .font(.caption)
-                                            .foregroundColor(.secondary)
+                                            .foregroundColor(Color.interfaceSecondaryLabel)
                                     }
                                 }
                                 .padding(.vertical, 2)
@@ -135,7 +135,7 @@ struct CodeResourcesViewer: View {
                         if filteredEntries.isEmpty {
                             Text(entries.isEmpty ? "No sealed files found" : "No files matching '\(searchQuery)'")
                                 .font(.subheadline)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                         } else {
                             ForEach(filteredEntries) { entry in
                                 SwiftUI.Button(action: {
@@ -144,14 +144,14 @@ struct CodeResourcesViewer: View {
                                     HStack(spacing: 10) {
                                         Image(systemName: fileIcon(for: entry.path))
                                             .font(.system(size: 16))
-                                            .foregroundColor(.secondary)
+                                            .foregroundColor(Color.interfaceSecondaryLabel)
                                             .frame(width: 20)
 
                                         VStack(alignment: .leading, spacing: 2) {
                                             HStack {
                                                 Text(entry.path)
                                                     .font(.system(size: 13, design: .monospaced))
-                                                    .foregroundColor(.primary)
+                                                    .foregroundColor(Color.interfacePrimaryLabel)
                                                 Spacer()
                                                 if entry.isOptional {
                                                     Text("Optional")
@@ -166,13 +166,13 @@ struct CodeResourcesViewer: View {
                                             if let h2 = entry.hash2Hex {
                                                 Text("SHA-256: \(h2)")
                                                     .font(.system(size: 10, design: .monospaced))
-                                                    .foregroundColor(.secondary)
+                                                    .foregroundColor(Color.interfaceSecondaryLabel)
                                                     .lineLimit(1)
                                                     .truncationMode(.middle)
                                             } else if let h1 = entry.hashHex {
                                                 Text("SHA-1: \(h1)")
                                                     .font(.system(size: 10, design: .monospaced))
-                                                    .foregroundColor(.secondary)
+                                                    .foregroundColor(Color.interfaceSecondaryLabel)
                                                     .lineLimit(1)
                                                     .truncationMode(.middle)
                                             }
@@ -217,7 +217,7 @@ struct CodeResourcesViewer: View {
                         .font(.headline)
                     Text(err)
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
                 }

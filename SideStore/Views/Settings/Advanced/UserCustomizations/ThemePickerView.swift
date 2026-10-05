@@ -87,7 +87,7 @@ struct ThemePickerView: View {
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.white.opacity(0.2))
+                            .fill(Color.interfaceCardSurface(opacity: 0.2))
                         RoundedRectangle(cornerRadius: 4)
                             .fill(selectedColor)
                             .frame(width: geo.size.width * 0.7)
@@ -173,7 +173,7 @@ struct ThemePickerView: View {
                         .frame(width: 24, height: 24)
                         .overlay(
                             Circle()
-                                .stroke(Color.white.opacity(0.3), lineWidth: 1)
+                                .stroke(Color.interfaceBorder(opacity: 0.3), lineWidth: 1)
                         )
 
                     Text(preset.name)

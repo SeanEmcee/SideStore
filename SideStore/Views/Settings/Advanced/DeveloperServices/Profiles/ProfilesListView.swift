@@ -44,7 +44,7 @@ struct ProfilesListView: View {
                         .padding(.vertical, 8)
                     } else {
                         Text(searchText.isEmpty ? "No Provisioning Profiles found on Developer Portal." : "No matching Provisioning Profiles found.")
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                             .font(.subheadline)
                     }
                 } else {
@@ -180,7 +180,7 @@ private struct ProfileRow: View {
                 if let bundleID = profile.bundleIdentifier {
                     Text(bundleID)
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 }
                 Spacer()
                 if let type = profile.profileType {
@@ -190,7 +190,7 @@ private struct ProfileRow: View {
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
                         .background(Color.secondary.opacity(0.12))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                         .cornerRadius(6)
                 }
                 if let isTeam = profile.isTeamProfile {

@@ -32,7 +32,7 @@ struct DeveloperServicesView: View {
                                     .font(.headline)
                                 Text("Team ID: \(team.identifier)")
                                     .font(.subheadline)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                             }
 
                             Spacer()
@@ -42,7 +42,7 @@ struct DeveloperServicesView: View {
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 4)
                                 .background(Color.secondary.opacity(0.15))
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                                 .cornerRadius(8)
                         }
                         .padding(.vertical, 4)
@@ -62,7 +62,7 @@ struct DeveloperServicesView: View {
                                     .font(.body)
                                 Text("\(viewModel.appIDs.count) registered")
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                             }
                         }
                         .padding(.vertical, 4)
@@ -80,7 +80,7 @@ struct DeveloperServicesView: View {
                                     .font(.body)
                                 Text("\(viewModel.profiles.count) active on portal")
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                             }
                         }
                         .padding(.vertical, 4)
@@ -98,7 +98,7 @@ struct DeveloperServicesView: View {
                                     .font(.body)
                                 Text("\(viewModel.certificates.count) registered on portal")
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                             }
                         }
                         .padding(.vertical, 4)
@@ -116,7 +116,7 @@ struct DeveloperServicesView: View {
                                     .font(.body)
                                 Text("\(viewModel.appGroups.count) configured")
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                             }
                         }
                         .padding(.vertical, 4)
@@ -134,7 +134,7 @@ struct DeveloperServicesView: View {
                                     .font(.body)
                                 Text("\(viewModel.devices.count) devices")
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                             }
                         }
                         .padding(.vertical, 4)

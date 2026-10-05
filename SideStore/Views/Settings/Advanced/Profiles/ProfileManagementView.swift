@@ -58,7 +58,7 @@ struct ProfileManagementView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Total")
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                             Text("\(viewModel.profiles.count)")
                                 .font(.title2)
                                 .fontWeight(.bold)
@@ -67,7 +67,7 @@ struct ProfileManagementView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Ready")
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                             Text("\(viewModel.readyCount)")
                                 .font(.title2)
                                 .fontWeight(.bold)
@@ -77,7 +77,7 @@ struct ProfileManagementView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Portal")
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                             Text("\(viewModel.portalCount)")
                                 .font(.title2)
                                 .fontWeight(.bold)
@@ -87,7 +87,7 @@ struct ProfileManagementView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Missing Cert")
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                             Text("\(viewModel.profiles.count - viewModel.readyCount)")
                                 .font(.title2)
                                 .fontWeight(.bold)
@@ -111,7 +111,7 @@ struct ProfileManagementView: View {
                             .padding(.vertical, 8)
                         } else {
                             Text(searchText.isEmpty ? "No provisioning profiles installed. Tap '+' to import or pull to refresh." : "No matching provisioning profiles found.")
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                                 .font(.subheadline)
                         }
                     } else {
@@ -186,7 +186,7 @@ struct ProfileManagementView: View {
                         .padding(.horizontal, 16)
                         .padding(.vertical, 10)
                         .background(Color(.systemGray6))
-                        .foregroundColor(.primary)
+                        .foregroundColor(Color.interfacePrimaryLabel)
                         .cornerRadius(20)
                         .shadow(radius: 6)
                         .padding(.bottom, 20)
@@ -464,7 +464,7 @@ private struct ProfileManagementRowView: View {
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
                     .background(Color.secondary.opacity(0.15))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .cornerRadius(6)
                 }
 
@@ -504,21 +504,21 @@ private struct ProfileManagementRowView: View {
             HStack {
                 Text(profile.bundleIdentifier)
                     .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                 Spacer()
                 Text(profile.teamName)
                     .font(.caption2)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
             }
 
             if let cert = matchingCert {
                 HStack(spacing: 4) {
                     Image(systemName: "key.fill")
                         .font(.system(size: 9))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                     Text("Signer: \(cert.name)")
                         .font(.system(size: 10))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                         .lineLimit(1)
                 }
             }

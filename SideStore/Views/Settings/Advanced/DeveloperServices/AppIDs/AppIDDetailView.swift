@@ -43,7 +43,7 @@ struct AppIDDetailView: View {
                 if currentAppID.features.isEmpty {
                     Text("No special features enabled for this App ID.")
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 } else {
                     let sortedFeatures = currentAppID.features.sorted { $0.key.rawValue < $1.key.rawValue }
                     ForEach(sortedFeatures, id: \.key.rawValue) { feature, value in
@@ -53,7 +53,7 @@ struct AppIDDetailView: View {
                                     .font(.subheadline)
                                 Text(feature.rawValue)
                                     .font(.caption2)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                             }
                             Spacer()
                             Text(value)
@@ -68,7 +68,7 @@ struct AppIDDetailView: View {
                 if viewModel.appGroups.isEmpty {
                     Text("No App Groups available on this team. Create an App Group first.")
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 } else {
                     ForEach(viewModel.appGroups, id: \.identifier) { group in
                         SwiftUI.Button {
@@ -83,10 +83,10 @@ struct AppIDDetailView: View {
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(group.name)
                                         .font(.subheadline)
-                                        .foregroundColor(.primary)
+                                        .foregroundColor(Color.interfacePrimaryLabel)
                                     Text(group.identifier)
                                         .font(.caption)
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(Color.interfaceSecondaryLabel)
                                 }
                                 Spacer()
                                 if selectedGroupIDs.contains(group.identifier) {
@@ -95,7 +95,7 @@ struct AppIDDetailView: View {
                                         .imageScale(.large)
                                 } else {
                                     Image(systemName: "circle")
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(Color.interfaceSecondaryLabel)
                                         .imageScale(.large)
                                 }
                             }

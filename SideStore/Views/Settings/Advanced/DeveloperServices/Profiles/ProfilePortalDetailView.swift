@@ -52,7 +52,7 @@ struct ProfilePortalDetailView: View {
             Section(header: Text("Profile Information"), footer: Text("You can edit the profile name and regenerate the profile with updated certificate or device associations.")) {
                 HStack {
                     Text("Name")
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                         .frame(width: 100, alignment: .leading)
                     TextField("Profile Name", text: $editedName)
                 }
@@ -85,7 +85,7 @@ struct ProfilePortalDetailView: View {
 
                 HStack {
                     Text("App ID ID")
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                         .frame(width: 100, alignment: .leading)
                     TextField("App ID Identifier (e.g. R7V954WR9W)", text: $selectedAppIDId)
                         .font(.system(.subheadline, design: .monospaced))
@@ -95,7 +95,7 @@ struct ProfilePortalDetailView: View {
             Section(header: Text("Associated Certificates (\(selectedCertificateIDs.count))"), footer: Text("Select which certificates are authorized to sign with this profile, or add custom certificate IDs.")) {
                 if viewModel.certificates.isEmpty {
                     Text("No certificates found on this team.")
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                         .font(.subheadline)
                 } else {
                     ForEach(viewModel.certificates, id: \.serialNumber) { cert in
@@ -111,10 +111,10 @@ struct ProfilePortalDetailView: View {
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(cert.commonName ?? cert.name)
                                         .font(.subheadline)
-                                        .foregroundColor(.primary)
+                                        .foregroundColor(Color.interfacePrimaryLabel)
                                     Text("Serial: \(cert.serialNumber)")
                                         .font(.caption2)
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(Color.interfaceSecondaryLabel)
                                     let hasKey = ProfileManager.shared.hasPrivateKey(for: cert)
                                     HStack(spacing: 4) {
                                         Text("Type: \(hasKey ? "public + private" : "public only")")
@@ -168,7 +168,7 @@ struct ProfilePortalDetailView: View {
             }, footer: Text("Select devices allowed to run apps with this profile, or enter a custom Device ID / UDID.")) {
                 if viewModel.devices.isEmpty {
                     Text("No registered devices found on this team.")
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                         .font(.subheadline)
                 } else {
                     ForEach(viewModel.devices, id: \.identifier) { device in
@@ -186,10 +186,10 @@ struct ProfilePortalDetailView: View {
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(device.name)
                                         .font(.subheadline)
-                                        .foregroundColor(.primary)
+                                        .foregroundColor(Color.interfacePrimaryLabel)
                                     Text(device.identifier)
                                         .font(.caption2)
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(Color.interfaceSecondaryLabel)
                                 }
                                 Spacer()
                                 if isSelected {

@@ -119,7 +119,7 @@ struct PairingFileManagementView: View {
                     }
                     .padding(.horizontal, 10)
                     .padding(.vertical, 5)
-                    .background(Capsule().fill(Color.white.opacity(0.12)))
+                    .background(Capsule().fill(Color.interfaceCardSurface(opacity: 0.12)))
                 }
                 .padding(.horizontal, 16)
                 .frame(height: 50)
@@ -147,7 +147,7 @@ struct PairingFileManagementView: View {
                     }
                     .padding(.horizontal, 10)
                     .padding(.vertical, 5)
-                    .background(Capsule().fill(Color.white.opacity(0.12)))
+                    .background(Capsule().fill(Color.interfaceCardSurface(opacity: 0.12)))
                 }
                 .padding(.horizontal, 16)
                 .frame(height: 50)
@@ -444,7 +444,7 @@ struct PairingFileManagementView: View {
                     }
                     .padding(.horizontal, 10)
                     .padding(.vertical, 5)
-                    .background(Capsule().fill(Color.white.opacity(0.12)))
+                    .background(Capsule().fill(Color.interfaceCardSurface(opacity: 0.12)))
                 }
 
                 if proto == viewModel.preferredProtocol {
@@ -460,7 +460,7 @@ struct PairingFileManagementView: View {
                     }
                     .padding(.horizontal, 10)
                     .padding(.vertical, 5)
-                    .background(Capsule().fill(Color.white.opacity(0.12)))
+                    .background(Capsule().fill(Color.interfaceCardSurface(opacity: 0.12)))
                 }
             }
         }

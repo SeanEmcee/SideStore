@@ -22,7 +22,7 @@ struct CacheManagementView: View {
                     Section(header: Text("Internal App Cache"), footer: Text("Cached unzipped app bundles stored in SideStore's private container. These are used during automatic background refreshes and resigns.")) {
                         if viewModel.internalApps.isEmpty {
                             Text("No cached internal apps.")
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                                 .italic()
                                 .padding(.vertical, 4)
                         } else {
@@ -45,7 +45,7 @@ struct CacheManagementView: View {
                     Section(header: Text("Exported Resigned Apps"), footer: Text("Copies of signed app bundles exported to your Documents folder. These can be shared or retrieved via the Files app.")) {
                         if viewModel.resignedApps.isEmpty {
                             Text("No exported resigned apps.")
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                                 .italic()
                                 .padding(.vertical, 4)
                         } else {
@@ -140,7 +140,7 @@ struct CacheItemRow: View {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 40, height: 40)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .padding(4)
                     #if !os(tvOS)
                     .background(Color(.systemGray6))
@@ -159,7 +159,7 @@ struct CacheItemRow: View {
                 if let bundleID = item.bundleIdentifier {
                     Text(bundleID)
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                         .lineLimit(1)
                 }
             }
@@ -168,7 +168,7 @@ struct CacheItemRow: View {
             
             Text(item.sizeString)
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
         }
         .padding(.vertical, 4)
         .contextMenu {

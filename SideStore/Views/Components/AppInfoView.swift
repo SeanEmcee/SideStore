@@ -99,7 +99,7 @@ struct AppInfoView: View {
                                 .font(.headline)
                             Text(installedApp.bundleIdentifier)
                                 .font(.subheadline)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                             
                             if installedApp.resignedBundleIdentifier != installedApp.bundleIdentifier {
                                 Text("Resigned: \(installedApp.resignedBundleIdentifier)")
@@ -132,11 +132,11 @@ struct AppInfoView: View {
                                 HStack {
                                     Text("Executable")
                                         .font(.subheadline)
-                                        .foregroundColor(.primary)
+                                        .foregroundColor(Color.interfacePrimaryLabel)
                                     Spacer()
                                     Text(execName)
                                         .font(.subheadline)
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(Color.interfaceSecondaryLabel)
                                 }
                             }
                         } else {
@@ -167,7 +167,7 @@ struct AppInfoView: View {
                                         .font(.subheadline)
                                     Text("UUID: \(profile.uuid.uuidString)")
                                         .font(.caption)
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(Color.interfaceSecondaryLabel)
                                 }
                             }
                             #if !os(tvOS)
@@ -192,10 +192,10 @@ struct AppInfoView: View {
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(showResignedProfile ? "No Resigned Profile Cached" : "No Bundle Profile Found")
                                         .font(.subheadline)
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(Color.interfaceSecondaryLabel)
                                     Text("Tap toggle to view \(showResignedProfile ? "bundle" : "resigned") profile")
                                         .font(.caption2)
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(Color.interfaceSecondaryLabel)
                                 }
                                 Spacer()
                                 SwiftUI.Button("Switch") {
@@ -248,10 +248,10 @@ struct AppInfoView: View {
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(showResignedInfoPlist ? "No Resigned Info.plist Cached" : "No Bundle Info.plist Found")
                                         .font(.subheadline)
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(Color.interfaceSecondaryLabel)
                                     Text("Tap toggle to view \(showResignedInfoPlist ? "bundle" : "resigned") Info.plist")
                                         .font(.caption2)
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(Color.interfaceSecondaryLabel)
                                 }
                                 Spacer()
                                 SwiftUI.Button("Switch") {
@@ -273,7 +273,7 @@ struct AppInfoView: View {
                                         .font(.subheadline)
                                     Text(ext.bundleIdentifier)
                                         .font(.caption)
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(Color.interfaceSecondaryLabel)
                                 }
                             }
                         }
@@ -365,7 +365,7 @@ struct ProvisioningProfileDetailView: View {
                                     .font(.subheadline)
                                 Text("Serial: \(cert.serialNumber)")
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                             }
                         }
                     }
@@ -437,7 +437,7 @@ struct AppIconView: View {
                     .overlay(
                         Image(systemName: "app")
                             .font(.system(size: 24))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                     )
             }
         }
@@ -464,7 +464,7 @@ struct InfoRow: View {
         HStack {
             Text(label)
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
             Spacer()
             Text(value)
                 .font(.subheadline)
@@ -483,7 +483,7 @@ struct ProfileInfoRow: View {
         HStack {
             Text(label)
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
             Spacer()
             Text(value)
                 .font(.subheadline)
@@ -510,11 +510,11 @@ struct EntitlementRow: View {
         VStack(alignment: .leading, spacing: 4) {
             Text(key)
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
                 .bold()
             Text(formatValue(value))
                 .font(.subheadline)
-                .foregroundColor(.primary)
+                .foregroundColor(Color.interfacePrimaryLabel)
         }
         .padding(.vertical, 4)
         #if !os(tvOS)
@@ -690,11 +690,11 @@ struct ExtensionInfoView: View {
                             HStack {
                                 Text("Executable")
                                     .font(.subheadline)
-                                    .foregroundColor(.primary)
+                                    .foregroundColor(Color.interfacePrimaryLabel)
                                 Spacer()
                                 Text(exec)
                                     .font(.subheadline)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                             }
                         }
                     } else {
@@ -730,10 +730,10 @@ struct ExtensionInfoView: View {
                                     .font(.subheadline)
                                 Text("UUID: \(profile.uuid.uuidString)")
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                                 Text("Expires: \(formatDate(profile.expirationDate))")
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                             }
                         }
                         #if !os(tvOS)
@@ -758,10 +758,10 @@ struct ExtensionInfoView: View {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(showResignedProfile ? "No Resigned Profile Cached" : "No Bundle Profile Found")
                                     .font(.subheadline)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                                 Text("Tap toggle to view \(showResignedProfile ? "bundle" : "resigned") profile")
                                     .font(.caption2)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                             }
                             Spacer()
                             SwiftUI.Button("Switch") {
@@ -814,10 +814,10 @@ struct ExtensionInfoView: View {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(showResignedInfoPlist ? "No Resigned Info.plist Cached" : "No Bundle Info.plist Found")
                                     .font(.subheadline)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                                 Text("Tap toggle to view \(showResignedInfoPlist ? "bundle" : "resigned") Info.plist")
                                     .font(.caption2)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                             }
                             Spacer()
                             SwiftUI.Button("Switch") {
@@ -844,7 +844,7 @@ struct ExtensionInfoView: View {
                                     .font(.subheadline)
                                 Text(subBundleID)
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                             }
                         }
                     }
@@ -928,11 +928,11 @@ struct BundleInspectorView: View {
                             HStack {
                                 Text("Executable")
                                     .font(.subheadline)
-                                    .foregroundColor(.primary)
+                                    .foregroundColor(Color.interfacePrimaryLabel)
                                 Spacer()
                                 Text(execName)
                                     .font(.subheadline)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                             }
                         }
                     } else {
@@ -952,10 +952,10 @@ struct BundleInspectorView: View {
                                 .font(.subheadline)
                             Text("UUID: \(profile.uuid.uuidString)")
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                             Text("Expires: \(formatDate(profile.expirationDate))")
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                         }
                     }
                 }
@@ -984,7 +984,7 @@ struct BundleInspectorView: View {
                                     .font(.subheadline)
                                 Text(subBundleID)
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                             }
                         }
                     }

@@ -586,7 +586,7 @@ struct UserCustomizationsView: View {
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
-                .background(Color.white.opacity(0.08))
+                .background(Color.interfaceCardSurface(opacity: 0.08))
                 .cornerRadius(8)
             }
             .padding(.horizontal, 16)

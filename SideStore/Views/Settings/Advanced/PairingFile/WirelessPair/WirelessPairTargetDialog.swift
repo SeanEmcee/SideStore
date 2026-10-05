@@ -32,7 +32,7 @@ struct WirelessPairTargetDialog: View {
             .background(Color(.systemGroupedBackground).ignoresSafeArea())
             .navigationBarTitle(viewModel.dialogMode == .client ? "Select Device To Pair" : "Select Server Interface", displayMode: .inline)
             #else
-            .background(Color.black.ignoresSafeArea())
+            .background(Color(uiColor: ThemeManager.dynamicColor(.background, fallback: .black)).ignoresSafeArea())
             .navigationTitle(viewModel.dialogMode == .client ? "Select Device To Pair" : "Select Server Interface")
             #endif
             .toolbar {
@@ -45,7 +45,7 @@ struct WirelessPairTargetDialog: View {
                             .font(.system(size: 13, weight: .bold))
                             .foregroundColor(Color.interfaceText)
                             .frame(width: 30, height: 30)
-                            .background(Color.white.opacity(0.18))
+                            .background(Color.interfaceCardSurface(opacity: 0.18))
                             .clipShape(Circle())
                     }
                 }
@@ -76,13 +76,13 @@ struct WirelessPairTargetDialog: View {
             Text("LOCAL NETWORK INTERFACES")
                 .font(.caption)
                 .fontWeight(.bold)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
                 .padding(.horizontal, 4)
             
             if viewModel.activeInterfaces.isEmpty {
                 Text("No active local interfaces detected.")
                     .font(.footnote)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .padding(.vertical, 12)
                     .padding(.horizontal, 4)
             } else {
@@ -103,7 +103,7 @@ struct WirelessPairTargetDialog: View {
             
             Text(name)
                 .font(.system(size: 11, weight: .semibold))
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
         }
         .padding(.horizontal, 7)
         .padding(.vertical, 3)
@@ -112,7 +112,7 @@ struct WirelessPairTargetDialog: View {
                 #if !os(tvOS)
                 .fill(Color(.tertiarySystemFill))
                 #else
-                .fill(Color.white.opacity(0.15))
+                .fill(Color.interfaceCardSurface(opacity: 0.15))
                 #endif
         )
     }
@@ -138,7 +138,7 @@ struct WirelessPairTargetDialog: View {
                     Text(iface.name)
                         .font(.subheadline)
                         .fontWeight(.bold)
-                        .foregroundColor(.primary)
+                        .foregroundColor(Color.interfacePrimaryLabel)
                     
                     interfaceTypeTag(name: iface.type.rawValue, color: tagColor)
                     
@@ -157,14 +157,14 @@ struct WirelessPairTargetDialog: View {
                     if let v4 = v4, !v4.isEmpty {
                         Text("IPv4: \(v4)")
                             .font(.caption.monospaced())
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                             .lineLimit(1)
                     }
                     
                     if let v6 = v6, !v6.isEmpty {
                         Text("IPv6: \(v6)")
                             .font(.caption.monospaced())
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                             .lineLimit(1)
                             .truncationMode(.middle)
                     }
@@ -197,7 +197,7 @@ struct WirelessPairTargetDialog: View {
             Text("CONFIGURED ENDPOINT")
                 .font(.caption)
                 .fontWeight(.bold)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
                 .padding(.horizontal, 4)
             
             fallbackEndpointRow
@@ -208,7 +208,7 @@ struct WirelessPairTargetDialog: View {
             Text("DISCOVERED NEARBY")
                 .font(.caption)
                 .fontWeight(.bold)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
                 .padding(.horizontal, 4)
             
             if viewModel.discoveredTargets.isEmpty {
@@ -218,11 +218,11 @@ struct WirelessPairTargetDialog: View {
                             .scaleEffect(0.7)
                         Text("Searching local network for devices…")
                             .font(.footnote)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                     } else {
                         Text("No pairing targets found via Bonjour.")
                             .font(.footnote)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                     }
                 }
                 .padding(.vertical, 8)
@@ -264,14 +264,14 @@ struct WirelessPairTargetDialog: View {
                 Text(target.name)
                     .font(.footnote)
                     .fontWeight(.bold)
-                    .foregroundColor(.primary)
+                    .foregroundColor(Color.interfacePrimaryLabel)
                 
                 VStack(alignment: .leading, spacing: 3) {
                     if let v4 = target.ipv4, !v4.isEmpty {
                         let formattedV4 = portString.isEmpty ? v4 : "\(v4):\(portString)"
                         Text("IPv4: \(formattedV4)")
                             .font(.caption.monospaced())
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                             .lineLimit(1)
                     }
                     
@@ -279,7 +279,7 @@ struct WirelessPairTargetDialog: View {
                         let formattedV6 = portString.isEmpty ? v6 : "[\(v6)]:\(portString)"
                         Text("IPv6: \(formattedV6)")
                             .font(.caption.monospaced())
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                             .lineLimit(1)
                             .truncationMode(.middle)
                     }
@@ -288,15 +288,15 @@ struct WirelessPairTargetDialog: View {
                         if !portString.isEmpty {
                             Text("Port: \(portString)")
                                 .font(.caption.monospaced())
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                         } else if viewModel.isScanning {
                             Text("Resolving IP address…")
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                         } else {
                             Text("Address unavailable")
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                         }
                     }
                 }
@@ -347,14 +347,14 @@ struct WirelessPairTargetDialog: View {
                 Text("Configured Target")
                     .font(.footnote)
                     .fontWeight(.bold)
-                    .foregroundColor(.primary)
+                    .foregroundColor(Color.interfacePrimaryLabel)
                 
                 let isV6 = fallback.ip.contains(":")
                 let label = isV6 ? "IPv6" : "IPv4"
                 let formattedIp = isV6 ? "[\(fallback.ip)]:\(portString)" : "\(fallback.ip):\(portString)"
                 Text("\(label): \(formattedIp)")
                     .font(.caption.monospaced())
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .lineLimit(1)
                     .truncationMode(.middle)
             }

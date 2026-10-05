@@ -49,7 +49,7 @@ struct AppGroupsListView: View {
                         .padding(.vertical, 8)
                     } else {
                         Text(searchText.isEmpty ? "No App Groups found on Developer Portal." : "No matching App Groups found.")
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                             .font(.subheadline)
                     }
                 } else {
@@ -62,19 +62,19 @@ struct AppGroupsListView: View {
                                 HStack {
                                     Text(group.name.isEmpty ? "App Group" : group.name)
                                         .font(.headline)
-                                        .foregroundColor(.primary)
+                                        .foregroundColor(Color.interfacePrimaryLabel)
                                     Spacer()
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(Color.interfaceSecondaryLabel)
                                 }
                                 Text(group.groupIdentifier)
                                     .font(.subheadline)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                                 HStack {
                                     Text("Group ID: \(group.identifier)")
                                         .font(.caption)
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(Color.interfaceSecondaryLabel)
                                     Spacer()
                                 }
                             }
@@ -186,7 +186,7 @@ struct AppGroupsListView: View {
 
                     Section(header: Text("Identifier")) {
                         Text(group.groupIdentifier)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                     }
 
                     Section {

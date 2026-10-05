@@ -45,7 +45,7 @@ struct AppIDsListView: View {
                         .padding(.vertical, 8)
                     } else {
                         Text(searchText.isEmpty ? "No App IDs registered on Developer Portal." : "No matching App IDs found.")
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                             .font(.subheadline)
                     }
                 } else {
@@ -68,11 +68,11 @@ struct AppIDsListView: View {
                                 }
                                 Text(appID.bundleIdentifier)
                                     .font(.subheadline)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                                 HStack {
                                     Text("ID: \(appID.identifier)")
                                         .font(.caption)
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(Color.interfaceSecondaryLabel)
                                     Spacer()
                                     if let expiration = appID.expirationDate {
                                         Text("Expires: \(formatDate(expiration))")

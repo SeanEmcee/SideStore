@@ -24,6 +24,18 @@ struct PreparedRefreshTests {
         let duplicate = PreparedRefreshJob(version: 1, createdAt: now, teamIdentifier: "TEAM", apps: [app, app])
         do { _ = try store.save(duplicate, now: now); fatalError("Duplicate app was accepted") }
         catch PreparedRefreshError.invalidJob {}
-        print("Prepared refresh storage: round-trip, replay, traversal, expiry, and duplicate-app tests passed.")
+        let missingMain = PreparedRefreshJob.App(bundleIdentifier: "test.app", resignedBundleIdentifier: "test.app.TEAM", certificateSerial: "TEST", profiles: ["other.app": Data([1])])
+        do { _ = try store.save(.init(version: 1, createdAt: now, teamIdentifier: "TEAM", apps: [missingMain]), now: now); fatalError("Missing main profile was accepted") }
+        catch PreparedRefreshError.invalidJob {}
+        do { _ = try store.save(.init(version: 1, createdAt: now.addingTimeInterval(60), teamIdentifier: "TEAM", apps: [app]), now: now); fatalError("Future job was accepted") }
+        catch PreparedRefreshError.expiredJob {}
+        let tampered = try store.save(job, now: now)
+        let invalid = PreparedRefreshJob(version: 99, createdAt: now, teamIdentifier: "TEAM", apps: [app])
+        try JSONEncoder().encode(invalid).write(to: folder.appendingPathComponent(tampered + ".json"))
+        do { _ = try store.claim(tampered, now: now); fatalError("Invalid schema was accepted") }
+        catch PreparedRefreshError.invalidJob {}
+        do { _ = try store.claim(tampered, now: now); fatalError("Invalid claimed job survived") }
+        catch PreparedRefreshError.invalidJob {}
+        print("Prepared refresh storage: round-trip, replay, traversal, expiry, duplicate apps, missing profiles, future jobs, and tampered schema passed.")
     }
 }

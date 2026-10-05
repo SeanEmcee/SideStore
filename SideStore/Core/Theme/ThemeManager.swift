@@ -87,7 +87,7 @@ public final class ThemeManager: ObservableObject {
         UIColor { traits in
             if #available(iOS 17.0, tvOS 17.0, *) { _ = traits[InterfaceThemeRevision.self] }
             if role == .secondaryText, shared.customColor(for: role) == nil, let text = shared.customColor(for: .text) {
-                return text.withAlphaComponent(fallback.cgColor.alpha).resolvedColor(with: traits)
+                return text.withAlphaComponent(fallback.resolvedColor(with: traits).cgColor.alpha).resolvedColor(with: traits)
             }
             return (shared.customColor(for: role) ?? fallback).resolvedColor(with: traits)
         }
@@ -173,6 +173,11 @@ public final class ThemeManager: ObservableObject {
     }
 
     private func apply(to view: UIView) {
+        // System-owned picker and alert content must retain Apple's appearance.
+        if view.next is UIAlertController { return }
+        #if !os(tvOS)
+        if view.next is UIColorPickerViewController || view.next is UIActivityViewController || view.next is UIDocumentPickerViewController { return }
+        #endif
         let state = viewColors.object(forKey: view) ?? ViewColors(view: view)
         viewColors.setObject(state, forKey: view)
         if let original = state.background, let role = state.backgroundRole {
@@ -189,6 +194,20 @@ public final class ThemeManager: ObservableObject {
                 if label.textColor != target { label.textColor = target }
                 state.lastText = target
             }
+        }
+        if let field = view as? UITextField, let original = state.inputText {
+            field.textColor = customColor(for: .text) ?? original
+        }
+        if let field = view as? UITextView, let original = state.inputText {
+            field.textColor = customColor(for: .text) ?? original
+        }
+        if let border = state.border {
+            let target = customColor(for: .separators) ?? border
+            if view.layer.borderColor != target.cgColor { view.layer.borderColor = target.cgColor }
+        }
+        if let table = view as? UITableView, let separator = state.separator {
+            let target = customColor(for: .separators) ?? separator
+            if table.separatorColor != target { table.separatorColor = target }
         }
         applyBars(to: view, state: state)
         for child in view.subviews { apply(to: child) }
@@ -236,6 +255,9 @@ public final class ThemeManager: ObservableObject {
         let background: UIColor?
         let backgroundRole: ColorRole?
         let text: UIColor?
+        let inputText: UIColor?
+        let border: UIColor?
+        let separator: UIColor?
         var lastBackground: UIColor?
         var lastText: UIColor?
         var lastRevision: Int?
@@ -261,6 +283,15 @@ public final class ThemeManager: ObservableObject {
                 guard let value else { return false }
                 return colors.contains { value.resolvedColor(with: view.traitCollection) == $0.resolvedColor(with: view.traitCollection) }
             }
+            let input = (view as? UITextField)?.textColor ?? (view as? UITextView)?.textColor
+            inputText = matches(input, [.white, .label, .secondaryLabel]) ? input : nil
+            separator = (view as? UITableView)?.separatorColor
+            if let value = view.layer.borderColor {
+                let color = UIColor(cgColor: value)
+                var white: CGFloat = 0
+                var alpha: CGFloat = 0
+                border = color.getWhite(&white, alpha: &alpha) && white > 0.95 ? color : nil
+            } else { border = nil }
             backgroundRole = matches(color, screenColors) ? .background : matches(color, cardColors) ? (view.bounds.height > 0 && view.bounds.height <= 1 ? .separators : .cards) : nil
             background = backgroundRole != nil ? color : nil
             let labelColor = (view as? UILabel)?.textColor
@@ -276,11 +307,19 @@ public final class ThemeManager: ObservableObject {
 
 extension Color {
     static var interfaceText: Color { Color(uiColor: ThemeManager.dynamicColor(.text, fallback: .white)) }
+    static var interfacePrimaryLabel: Color { Color(uiColor: ThemeManager.dynamicColor(.text, fallback: .label)) }
+    static var interfaceSecondaryLabel: Color { Color(uiColor: ThemeManager.dynamicColor(.secondaryText, fallback: .secondaryLabel)) }
     static func interfaceSecondaryText(opacity: Double = 0.65) -> Color {
         Color(uiColor: ThemeManager.dynamicColor(.secondaryText, fallback: .white.withAlphaComponent(CGFloat(opacity))))
     }
     static var interfaceCard: Color { Color(uiColor: ThemeManager.dynamicColor(.cards, fallback: .white.withAlphaComponent(0.15))) }
+    static func interfaceCardSurface(opacity: Double) -> Color {
+        Color(uiColor: ThemeManager.dynamicColor(.cards, fallback: .white.withAlphaComponent(CGFloat(opacity))))
+    }
     static var interfaceDivider: Color { Color(uiColor: ThemeManager.dynamicColor(.separators, fallback: .white.withAlphaComponent(0.15))) }
+    static func interfaceBorder(opacity: Double) -> Color {
+        Color(uiColor: ThemeManager.dynamicColor(.separators, fallback: .white.withAlphaComponent(CGFloat(opacity))))
+    }
 }
 
 public extension UIColor {

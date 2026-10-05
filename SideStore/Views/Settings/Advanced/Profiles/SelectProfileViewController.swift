@@ -37,11 +37,11 @@ struct ProfileRowItemView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(profile.name)
                         .font(.headline)
-                        .foregroundColor(.primary)
+                        .foregroundColor(Color.interfacePrimaryLabel)
 
                     Text(profile.bundleIdentifier)
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 }
 
                 Spacer()
@@ -79,10 +79,10 @@ struct ProfileRowItemView: View {
                 HStack(spacing: 4) {
                     Image(systemName: "key.fill")
                         .font(.system(size: 9))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                     Text("Cert: \(cert.name)")
                         .font(.system(size: 10))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                         .lineLimit(1)
                 }
             }

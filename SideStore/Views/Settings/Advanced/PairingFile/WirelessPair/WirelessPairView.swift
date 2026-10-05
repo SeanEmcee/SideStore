@@ -79,7 +79,7 @@ struct WirelessPairView: View {
                     if viewModel.serviceID == nil {
                         Text(viewModel.subStatusText)
                             .font(.subheadline)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal, 32)
                             .transition(.scale.combined(with: .opacity))
@@ -97,7 +97,7 @@ struct WirelessPairView: View {
                                 .foregroundColor(.accentColor)
                             Text("Ensure both devices are on the same Wi-Fi network.")
                                 .font(.footnote)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                         }
                         .padding(.top, 4)
                 }
@@ -234,7 +234,7 @@ struct WirelessPairPinDialog: View {
                     
                     Text("Enter this 6-digit code on the connecting device to complete pairing.")
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 24)
                 }
@@ -245,7 +245,7 @@ struct WirelessPairPinDialog: View {
                         if index == 3 {
                             Text("-")
                                 .font(.system(size: 22, weight: .bold))
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                         }
                         Text(String(chars[index]))
                             .font(.system(size: 30, weight: .bold, design: .monospaced))
@@ -253,7 +253,7 @@ struct WirelessPairPinDialog: View {
                             #if !os(tvOS)
                             .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
                             #else
-                            .background(RoundedRectangle(cornerRadius: 12).fill(Color.white.opacity(0.1)))
+                            .background(RoundedRectangle(cornerRadius: 12).fill(Color.interfaceCardSurface(opacity: 0.1)))
                             #endif
                             .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
                             .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.accentColor.opacity(0.4), lineWidth: 1.5))
@@ -305,7 +305,7 @@ struct ConnectionDetailsCard: View {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(label)
                                 .font(.subheadline)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                             Text(value)
                                 .font(.subheadline)
                                 .fontWeight(.semibold)
@@ -323,7 +323,7 @@ struct ConnectionDetailsCard: View {
                     #if !os(tvOS)
                     .background(Color(.secondarySystemBackground))
                     #else
-                    .background(Color.white.opacity(0.1))
+                    .background(Color.interfaceCardSurface(opacity: 0.1))
                     #endif
                     .clipShape(
                         RoundedCorner(

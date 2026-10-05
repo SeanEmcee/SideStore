@@ -370,7 +370,7 @@ private struct LoadingOverlay: View {
                 #if !os(tvOS)
                 .background(Color(.secondarySystemBackground))
                 #else
-                .background(Color.white.opacity(0.1))
+                .background(Color.interfaceCardSurface(opacity: 0.1))
                 #endif
                 .cornerRadius(10)
         }

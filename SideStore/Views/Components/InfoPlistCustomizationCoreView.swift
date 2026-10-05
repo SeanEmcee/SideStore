@@ -330,7 +330,7 @@ public struct InfoPlistCustomizationCoreView: View {
             .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .stroke(Color.white.opacity(0.12), lineWidth: 1)
+                    .stroke(Color.interfaceBorder(opacity: 0.12), lineWidth: 1)
             )
             .shadow(color: Color.black.opacity(0.4), radius: 24, x: 0, y: 12)
             .padding(.horizontal, 20)
@@ -384,7 +384,7 @@ public struct InfoPlistCustomizationCoreView: View {
                         HStack(spacing: 6) {
                             Text(currentTarget.name)
                                 .font(.system(size: 14, weight: .semibold))
-                                .foregroundColor(.primary)
+                                .foregroundColor(Color.interfacePrimaryLabel)
 
                             Text(currentTarget.isExtension ? "Extension" : "Main App")
                                 .font(.system(size: 10, weight: .semibold))
@@ -392,12 +392,12 @@ public struct InfoPlistCustomizationCoreView: View {
                                 .padding(.vertical, 2)
                                 .background(Color.secondary.opacity(0.15))
                                 .clipShape(Capsule())
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                         }
 
                         Text(selectedTargetID)
                             .font(.system(size: 11, design: .monospaced))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                             .lineLimit(1)
                     }
 
@@ -405,7 +405,7 @@ public struct InfoPlistCustomizationCoreView: View {
 
                     Image(systemName: "chevron.up.chevron.down")
                         .font(.system(size: 12, weight: .semibold))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 }
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)
@@ -477,10 +477,10 @@ public struct InfoPlistCustomizationCoreView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text("Customize Info.plist")
                     .font(.system(size: 17, weight: .semibold))
-                    .foregroundColor(.primary)
+                    .foregroundColor(Color.interfacePrimaryLabel)
                 Text("Review and adjust app metadata before installing")
                     .font(.system(size: 12))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
             }
 
             Spacer()
@@ -516,15 +516,15 @@ public struct InfoPlistCustomizationCoreView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Bundle Identifier")
                             .font(.caption)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                         Text(bundleID)
                             .font(.system(size: 14, design: .monospaced))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.vertical, 8)
                         Text("Extension bundle identifier is managed relative to the main application.")
                             .font(.caption2)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 10)
@@ -532,7 +532,7 @@ public struct InfoPlistCustomizationCoreView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Bundle Identifier")
                             .font(.caption)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                         SuffixEnforcedTextField(
                             text: $bundleID,
                             placeholder: "com.example.app",
@@ -566,7 +566,7 @@ public struct InfoPlistCustomizationCoreView: View {
                         HStack {
                             Text("Append Team ID to Bundle Identifier")
                                 .font(.system(size: 14, weight: .regular))
-                                .foregroundColor(.primary)
+                                .foregroundColor(Color.interfacePrimaryLabel)
                             Spacer()
                             Image(systemName: appendTeamID ? "checkmark.circle.fill" : "circle")
                                 .font(.system(size: 20))
@@ -584,7 +584,7 @@ public struct InfoPlistCustomizationCoreView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Display Name")
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                     TextField("My App", text: $displayName)
                         .font(.system(size: 15))
                         .autocapitalization(.words)
@@ -612,7 +612,7 @@ public struct InfoPlistCustomizationCoreView: View {
             } else {
                 Text("If the bundle ID is not present in the database, it will install as a separate app.")
                     .font(.footnote)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .padding(.horizontal, 4)
                     .padding(.top, 2)
             }
@@ -628,7 +628,7 @@ public struct InfoPlistCustomizationCoreView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Version")
                             .font(.caption)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                         TextField("1.0.0", text: $versionString)
                             .font(.system(size: 15))
                             .autocapitalization(.none)
@@ -644,7 +644,7 @@ public struct InfoPlistCustomizationCoreView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Build")
                             .font(.caption)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                         TextField("1", text: $buildNumber)
                             .font(.system(size: 15))
                             .autocapitalization(.none)
@@ -662,7 +662,7 @@ public struct InfoPlistCustomizationCoreView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Minimum iOS Version")
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                     TextField("15.0", text: $minimumOSVersion)
                         .font(.system(size: 15))
                         .autocapitalization(.none)
@@ -687,10 +687,10 @@ public struct InfoPlistCustomizationCoreView: View {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Enable iTunes File Sharing")
                             .font(.system(size: 15))
-                            .foregroundColor(.primary)
+                            .foregroundColor(Color.interfacePrimaryLabel)
                         Text("Exposes Documents directory via Finder/iTunes")
                             .font(.footnote)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                     }
                 }
                 .toggleStyle(SwitchToggleStyle(tint: .blue))
@@ -703,10 +703,10 @@ public struct InfoPlistCustomizationCoreView: View {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Open Documents In Place")
                             .font(.system(size: 15))
-                            .foregroundColor(.primary)
+                            .foregroundColor(Color.interfacePrimaryLabel)
                         Text("Allows Files app to edit documents directly")
                             .font(.footnote)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                     }
                 }
                 .toggleStyle(SwitchToggleStyle(tint: .blue))
@@ -745,7 +745,7 @@ public struct InfoPlistCustomizationCoreView: View {
                         HStack {
                             Image(systemName: "magnifyingglass")
                                 .font(.system(size: 14))
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                             TextField("Filter keys...", text: $rawSearchQuery)
                                 .font(.system(size: 14))
                                 .submitLabel(.done)
@@ -754,7 +754,7 @@ public struct InfoPlistCustomizationCoreView: View {
                                 SwiftUI.Button(action: { rawSearchQuery = "" }) {
                                     Image(systemName: "xmark.circle.fill")
                                         .font(.system(size: 13))
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(Color.interfaceSecondaryLabel)
                                 }
                             }
                         }
@@ -784,7 +784,7 @@ public struct InfoPlistCustomizationCoreView: View {
                         Divider().padding(.leading, 16)
                         Text("No matching keys found")
                             .font(.footnote)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                             .frame(maxWidth: .infinity, alignment: .center)
                             .padding(.vertical, 16)
                     } else {
@@ -807,7 +807,7 @@ public struct InfoPlistCustomizationCoreView: View {
             HStack {
                 Text(item.key)
                     .font(.system(size: 13, weight: .medium, design: .monospaced))
-                    .foregroundColor(.primary)
+                    .foregroundColor(Color.interfacePrimaryLabel)
                     .lineLimit(isExpanded ? nil : 1)
                     .contentShape(Rectangle())
                     .onTapGesture {
@@ -872,7 +872,7 @@ public struct InfoPlistCustomizationCoreView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 12)
                     .background(Color(UIColor.tertiarySystemGroupedBackground))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             }
             .buttonStyle(.plain)
@@ -953,7 +953,7 @@ public struct InfoPlistCustomizationCoreView: View {
                 .font(.caption)
                 .fontWeight(.semibold)
         }
-        .foregroundColor(.secondary)
+        .foregroundColor(Color.interfaceSecondaryLabel)
         .padding(.leading, 4)
     }
 

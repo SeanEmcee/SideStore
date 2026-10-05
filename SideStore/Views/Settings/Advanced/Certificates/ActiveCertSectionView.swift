@@ -46,7 +46,7 @@ struct ActiveCertSectionView: View {
                             Text("SN: ").font(.footnote)
                             + Text(displaySerial).font(.system(size: 13, design: .monospaced))
                         )
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                         #if !os(tvOS)
                         .onTapGesture {
                             let key = "active_" + activeSerial
@@ -97,7 +97,7 @@ struct ActiveCertSectionView: View {
                 Text(viewModel.team == nil
                      ? "No active local certificate found.Import a .p12 file to sign your apps."
                      : "No active local certificate found.Create a new certificate or import a .p12 file to sign your apps.")
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .font(.subheadline)
             }
         }

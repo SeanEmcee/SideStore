@@ -127,7 +127,7 @@ struct CertificateDetailView: View {
                                 Text("Validity Progress")
                                 Spacer()
                                 Text(String(format: "%.0f%%", stats.progress * 100))
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                             }
                             ProgressView(value: stats.progress)
                                 .tint(.accentColor)
@@ -147,7 +147,7 @@ struct CertificateDetailView: View {
                         HStack {
                             Text("SHA-1 Fingerprint")
                                 .font(.subheadline)
-                                .foregroundColor(.primary)
+                                .foregroundColor(Color.interfacePrimaryLabel)
                             Spacer()
                             
                             #if !os(tvOS)
@@ -167,7 +167,7 @@ struct CertificateDetailView: View {
                         }
                         Text(details.fingerprintSHA1)
                             .font(.system(size: 11, design: .monospaced))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                             #if !os(tvOS)
                             .textSelection(.enabled)
                             #endif
@@ -180,7 +180,7 @@ struct CertificateDetailView: View {
                         HStack {
                             Text("SHA-256 Fingerprint")
                                 .font(.subheadline)
-                                .foregroundColor(.primary)
+                                .foregroundColor(Color.interfacePrimaryLabel)
                             Spacer()
                             
                             #if !os(tvOS)
@@ -200,7 +200,7 @@ struct CertificateDetailView: View {
                         }
                         Text(details.fingerprintSHA256)
                             .font(.system(size: 11, design: .monospaced))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                             #if !os(tvOS)
                             .textSelection(.enabled)
                             #endif
@@ -221,7 +221,7 @@ struct CertificateDetailView: View {
                         HStack {
                             Text("Private Key Data")
                                 .font(.subheadline)
-                                .foregroundColor(.primary)
+                                .foregroundColor(Color.interfacePrimaryLabel)
                             Spacer()
                             
                             SwiftUI.Button {
@@ -251,7 +251,7 @@ struct CertificateDetailView: View {
                         if showPrivateKey {
                             Text(privateKey.base64EncodedString())
                                 .font(.system(size: 11, design: .monospaced))
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                                 #if !os(tvOS)
                                 .textSelection(.enabled)
                                 #endif
@@ -260,7 +260,7 @@ struct CertificateDetailView: View {
                         } else {
                             Text("••••••••••••••••••••••••••••")
                                 .font(.system(.body, design: .monospaced))
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                         }
                     }
                     .padding(.vertical, 4)
@@ -271,7 +271,7 @@ struct CertificateDetailView: View {
                         HStack {
                             Text("Certificate PEM Data")
                                 .font(.subheadline)
-                                .foregroundColor(.primary)
+                                .foregroundColor(Color.interfacePrimaryLabel)
                             Spacer()
                             
                             #if !os(tvOS)
@@ -293,7 +293,7 @@ struct CertificateDetailView: View {
                         ScrollView(.horizontal, showsIndicators: true) {
                             Text(String(data: certData, encoding: .utf8) ?? certData.base64EncodedString())
                                 .font(.system(size: 11, design: .monospaced))
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                                 #if !os(tvOS)
                                 .textSelection(.enabled)
                                 #endif
@@ -339,11 +339,11 @@ struct CertificateDetailView: View {
         HStack {
             Text(title)
                 .font(.subheadline)
-                .foregroundColor(.primary)
+                .foregroundColor(Color.interfacePrimaryLabel)
             Spacer()
             Text(value)
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
                 .multilineTextAlignment(.trailing)
                 #if !os(tvOS)
                 .textSelection(.enabled)
@@ -355,11 +355,11 @@ struct CertificateDetailView: View {
         HStack {
             Text(title)
                 .font(.subheadline)
-                .foregroundColor(.primary)
+                .foregroundColor(Color.interfacePrimaryLabel)
             Spacer()
             Text(value)
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
                 .multilineTextAlignment(.trailing)
                 #if !os(tvOS)
                 .textSelection(.enabled)

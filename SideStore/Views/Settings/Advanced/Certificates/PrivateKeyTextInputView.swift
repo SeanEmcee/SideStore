@@ -34,7 +34,7 @@ struct PrivateKeyTextInputView: View {
                 
                 Text("Paste your PEM-formatted private key below, or import it from a text file.")
                     .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .padding(.horizontal)
                     .padding(.top)
                 
@@ -44,7 +44,7 @@ struct PrivateKeyTextInputView: View {
                     #if !os(tvOS)
                     .background(Color(.secondarySystemBackground))
                     #else
-                    .background(Color.white.opacity(0.1))
+                    .background(Color.interfaceCardSurface(opacity: 0.1))
                     #endif
                     .cornerRadius(8)
                     .padding(.horizontal)

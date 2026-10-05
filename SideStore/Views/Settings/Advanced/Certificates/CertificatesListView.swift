@@ -24,9 +24,9 @@ struct CertificatesListView: View {
         if viewModel.certificates.isEmpty {
             Section(header: Text("All Certificates")) {
                 if viewModel.isLoading {
-                    Text("Fetching certificates...").foregroundColor(.secondary)
+                    Text("Fetching certificates...").foregroundColor(Color.interfaceSecondaryLabel)
                 } else {
-                    Text("No local certificates found.").foregroundColor(.secondary)
+                    Text("No local certificates found.").foregroundColor(Color.interfaceSecondaryLabel)
                 }
             }
         } else {

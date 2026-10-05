@@ -221,11 +221,11 @@ struct PlistNodeRow: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(node.key)
                         .font(.subheadline)
-                        .foregroundColor(.primary)
+                        .foregroundColor(Color.interfacePrimaryLabel)
                         .bold()
                     Text(node.typeInfo)
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 }
                 .contextMenu {
                     SwiftUI.Button {
@@ -256,12 +256,12 @@ struct PlistNodeRow: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(node.key)
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .bold()
                 ScrollView(.horizontal, showsIndicators: false) {
                     Text(node.value ?? "N/A")
                         .font(.subheadline)
-                        .foregroundColor(.primary)
+                        .foregroundColor(Color.interfacePrimaryLabel)
                         .multilineTextAlignment(.leading)
                 }
             }
@@ -361,7 +361,7 @@ struct InfoPlistRawXMLView: View {
                         #if !os(tvOS)
                         .background(Color(.secondarySystemBackground))
                         #else
-                        .background(Color.white.opacity(0.1))
+                        .background(Color.interfaceCardSurface(opacity: 0.1))
                         #endif
                         .cornerRadius(8)
                         .padding(.horizontal)
@@ -373,7 +373,7 @@ struct InfoPlistRawXMLView: View {
                             #if !os(tvOS)
                             .background(Color(.secondarySystemBackground))
                             #else
-                            .background(Color.white.opacity(0.1))
+                            .background(Color.interfaceCardSurface(opacity: 0.1))
                             #endif
                             .cornerRadius(8)
                     }
@@ -452,7 +452,7 @@ struct InfoPlistRawView: View {
                         #if !os(tvOS)
                         .background(Color(.secondarySystemBackground))
                         #else
-                        .background(Color.white.opacity(0.1))
+                        .background(Color.interfaceCardSurface(opacity: 0.1))
                         #endif
                         .cornerRadius(8)
                         .padding(.horizontal)
@@ -464,7 +464,7 @@ struct InfoPlistRawView: View {
                             #if !os(tvOS)
                             .background(Color(.secondarySystemBackground))
                             #else
-                            .background(Color.white.opacity(0.1))
+                            .background(Color.interfaceCardSurface(opacity: 0.1))
                             #endif
                             .cornerRadius(8)
                     }
@@ -690,11 +690,11 @@ struct SemanticValueRow: View {
         HStack {
             Text(label)
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
             Spacer()
             Text(value)
                 .font(.subheadline)
-                .foregroundColor(.primary)
+                .foregroundColor(Color.interfacePrimaryLabel)
                 .multilineTextAlignment(.trailing)
                 .lineLimit(2)
         }
@@ -719,11 +719,11 @@ struct LocalCopyableDescriptionRow: View {
         VStack(alignment: .leading, spacing: 4) {
             Text(key)
                 .font(.caption)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
                 .bold()
             Text(value)
                 .font(.subheadline)
-                .foregroundColor(.primary)
+                .foregroundColor(Color.interfacePrimaryLabel)
         }
         .padding(.vertical, 4)
         .contextMenu {
@@ -776,13 +776,13 @@ struct CopyableValueRow: View {
         VStack(alignment: .leading, spacing: 4) {
             Text(key)
                 .font(.caption)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
                 .bold()
             
             ScrollView(.horizontal, showsIndicators: false) {
                 Text(formatValue(value))
                     .font(.subheadline)
-                    .foregroundColor(.primary)
+                    .foregroundColor(Color.interfacePrimaryLabel)
                     .multilineTextAlignment(.leading)
             }
         }
@@ -841,7 +841,7 @@ struct SearchBarView: View {
     var body: some View {
         HStack {
             Image(systemName: "magnifyingglass")
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
             
             TextField("Search keys", text: $text)
                 .textFieldStyle(PlainTextFieldStyle())
@@ -851,7 +851,7 @@ struct SearchBarView: View {
                     self.text = ""
                 }) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 }
                 .buttonStyle(.plain)
             }
@@ -860,7 +860,7 @@ struct SearchBarView: View {
         #if !os(tvOS)
         .background(Color(.secondarySystemBackground))
         #else
-        .background(Color.white.opacity(0.1))
+        .background(Color.interfaceCardSurface(opacity: 0.1))
         #endif
         .cornerRadius(8)
     }

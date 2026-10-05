@@ -31,7 +31,7 @@ struct HealthCheckView: View {
                                  : "All requirements met. Local device pairing & Remote server connection active."
                             )
                             .font(.subheadline)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                             .multilineTextAlignment(.center)
                         case .failure(let err):
                             Image(systemName: "exclamationmark.triangle.fill")
@@ -42,7 +42,7 @@ struct HealthCheckView: View {
                                 .fontWeight(.bold)
                             Text(err.localizedDescription)
                                 .font(.subheadline)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                                 .multilineTextAlignment(.center)
                         }
                     } else {
@@ -108,7 +108,7 @@ struct HealthCheckView: View {
                     Text("Connection Mode")
                     Spacer()
                     Text(viewModel.connectionMode == .localVPN ? "Local VPN" : "Remote Server")
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 }
                 
                 if viewModel.connectionMode == .localVPN {
@@ -125,7 +125,7 @@ struct HealthCheckView: View {
                         Text("Active Protocol")
                         Spacer()
                         Text(viewModel.activeProtocol)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                     }
                 } else {
                     ConfigRow(label: "Remote Endpoint IP", value: viewModel.remoteServerIp.isEmpty ? nil : viewModel.remoteServerIp)
@@ -133,7 +133,7 @@ struct HealthCheckView: View {
                         Text("Active Protocol")
                         Spacer()
                         Text(viewModel.activeProtocol)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                     }
                 }
             }
@@ -142,7 +142,7 @@ struct HealthCheckView: View {
             Section(header: Text("Active Network Interfaces")) {
                 if viewModel.availableInterfaces.isEmpty {
                     Text("No active interfaces scanned.")
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                         .italic()
                 } else {
                     let vpnInterfaces = viewModel.availableInterfaces.filter { $0.type.isVPN }
@@ -185,7 +185,7 @@ struct DependencyRow: View {
                     .font(.body)
                 Text(subtitle)
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
             }
             Spacer()
             if let satisfied = isSatisfied {
@@ -220,7 +220,7 @@ struct ConfigRow: View {
             Text(label)
             Spacer()
             Text(value ?? "N/A")
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
         }
     }
 }
@@ -255,7 +255,7 @@ struct InterfaceRow: View {
             HStack(spacing: 8) {
                 Text("Iface:")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .frame(width: 36, alignment: .leading)
                 
                 Text(iface.name)
@@ -277,7 +277,7 @@ struct InterfaceRow: View {
             HStack(alignment: .top, spacing: 8) {
                 Text("IPv4:")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .frame(width: 36, alignment: .leading)
                 
                 Text(ipv4Host)
@@ -287,14 +287,14 @@ struct InterfaceRow: View {
                 if hasIPv4 {
                     Text("(\(ipv4Mask))")
                         .font(.caption2)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 }
             }
             
             HStack(alignment: .top, spacing: 8) {
                 Text("IPv6:")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .frame(width: 36, alignment: .leading)
                 
                 Text(ipv6Address)

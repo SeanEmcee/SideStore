@@ -68,7 +68,7 @@ struct CreateManualProfileView: View {
                             }
                         } else {
                             Text("No App IDs found. Create an App ID first.")
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                         }
                     } else {
                         Picker("App ID", selection: $selectedAppIDIdentifier) {
@@ -129,7 +129,7 @@ struct CreateManualProfileView: View {
                                 }
                             } else {
                                 Text("No certificates found on this team.")
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                                     .font(.subheadline)
                             }
                         } else {
@@ -146,10 +146,10 @@ struct CreateManualProfileView: View {
                                         VStack(alignment: .leading, spacing: 2) {
                                             Text(cert.commonName ?? cert.name)
                                                 .font(.subheadline)
-                                                .foregroundColor(.primary)
+                                                .foregroundColor(Color.interfacePrimaryLabel)
                                             Text("Serial: \(cert.serialNumber)")
                                                 .font(.caption2)
-                                                .foregroundColor(.secondary)
+                                                .foregroundColor(Color.interfaceSecondaryLabel)
                                             let hasKey = ProfileManager.shared.hasPrivateKey(for: cert)
                                             HStack(spacing: 4) {
                                                 Text("Type: \(hasKey ? "public + private" : "public only")")
@@ -198,7 +198,7 @@ struct CreateManualProfileView: View {
                                     }
                                 } else {
                                     Text("No registered \(selectedProfileType.displayName) devices found on this team.")
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(Color.interfaceSecondaryLabel)
                                         .font(.subheadline)
                                 }
                             } else {
@@ -217,7 +217,7 @@ struct CreateManualProfileView: View {
                                                     .font(.subheadline)
                                                 Text(device.identifier)
                                                     .font(.caption2)
-                                                    .foregroundColor(.secondary)
+                                                    .foregroundColor(Color.interfaceSecondaryLabel)
                                             }
                                             Spacer()
                                             if selectedDeviceIDs.contains(devID) {

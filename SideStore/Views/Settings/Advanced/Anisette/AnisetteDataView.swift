@@ -462,7 +462,7 @@ struct AnisetteDataView: View {
                                 .foregroundColor(Color.interfaceText)
                                 .frame(minHeight: 320)
                                 .padding(8)
-                                .background(Color.white.opacity(0.06))
+                                .background(Color.interfaceCardSurface(opacity: 0.06))
                                 .cornerRadius(10)
                             
                             SwiftUI.Button {
@@ -542,7 +542,7 @@ struct AnisetteDataView: View {
                                             Spacer()
                                         }
                                         .frame(height: 44)
-                                        .background(Color.white.opacity(0.12))
+                                        .background(Color.interfaceCardSurface(opacity: 0.12))
                                         .cornerRadius(10)
                                     }
                                     .disabled(viewModel.serverReturnedHeadersJSON == "{}" || viewModel.serverReturnedHeadersJSON.isEmpty)
@@ -568,7 +568,7 @@ struct AnisetteDataView: View {
                                         .foregroundColor(.accentColor)
                                         .padding(.horizontal, 10)
                                         .padding(.vertical, 5)
-                                        .background(Color.white.opacity(0.1))
+                                        .background(Color.interfaceCardSurface(opacity: 0.1))
                                         .cornerRadius(8)
                                     }
                                     .buttonStyle(.borderless)
@@ -749,14 +749,14 @@ struct AnisetteDataView: View {
                     .foregroundColor(Color.interfaceText)
                     .frame(minHeight: 64)
                     .padding(6)
-                    .background(Color.white.opacity(0.06))
+                    .background(Color.interfaceCardSurface(opacity: 0.06))
                     .cornerRadius(8)
                 #else
                 TextField(placeholder, text: text)
                     .font(.system(size: 13, design: .monospaced))
                     .foregroundColor(Color.interfaceText)
                     .padding(8)
-                    .background(Color.white.opacity(0.06))
+                    .background(Color.interfaceCardSurface(opacity: 0.06))
                     .cornerRadius(8)
                 #endif
             } else {
@@ -766,7 +766,7 @@ struct AnisetteDataView: View {
                     .autocapitalization(autocapitalization)
                     .disableAutocorrection(true)
                     .padding(8)
-                    .background(Color.white.opacity(0.06))
+                    .background(Color.interfaceCardSurface(opacity: 0.06))
                     .cornerRadius(8)
             }
         }

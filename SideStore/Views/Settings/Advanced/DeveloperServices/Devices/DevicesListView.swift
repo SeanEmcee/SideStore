@@ -63,7 +63,7 @@ struct DevicesListView: View {
                         .padding(.vertical, 8)
                     } else {
                         Text(searchText.isEmpty ? "No devices registered on Developer Portal." : "No matching devices found.")
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                             .font(.subheadline)
                     }
                 } else {
@@ -76,7 +76,7 @@ struct DevicesListView: View {
                                 HStack {
                                     Text(device.name.isEmpty ? "Device" : device.name)
                                         .font(.headline)
-                                        .foregroundColor(.primary)
+                                        .foregroundColor(Color.interfacePrimaryLabel)
                                     Spacer()
                                     if device.status == "d" {
                                         Text("Disabled")
@@ -92,15 +92,15 @@ struct DevicesListView: View {
                                         .padding(.horizontal, 6)
                                         .padding(.vertical, 2)
                                         .background(Color.secondary.opacity(0.15))
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(Color.interfaceSecondaryLabel)
                                         .cornerRadius(6)
                                     Image(systemName: "chevron.right")
                                         .font(.caption)
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(Color.interfaceSecondaryLabel)
                                 }
                                 Text(device.identifier)
                                     .font(.system(.caption, design: .monospaced))
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                             }
                             .padding(.vertical, 2)
                         }
@@ -294,7 +294,7 @@ struct DevicesListView: View {
                     Section(header: Text("Device Identifier (UDID)")) {
                         Text(device.identifier.isEmpty ? "Not Available" : device.identifier)
                             .font(.system(.subheadline, design: .monospaced))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                     }
 
                     Section(header: Text("Device Details")) {

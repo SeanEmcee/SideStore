@@ -54,7 +54,7 @@ public struct DirectoryExplorerView: View {
                         .scaleEffect(1.2)
                     Text("Loading directory contents...")
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 }
                 .frame(maxWidth: .infinity)
                 
@@ -70,11 +70,11 @@ public struct DirectoryExplorerView: View {
                     VStack(spacing: 4) {
                         Text("Empty Directory")
                             .font(.title3.weight(.semibold))
-                            .foregroundColor(.primary)
+                            .foregroundColor(Color.interfacePrimaryLabel)
                         
                         Text("No files or subfolders found in this directory.")
                             .font(.subheadline)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                             .multilineTextAlignment(.center)
                     }
                 }
@@ -393,7 +393,7 @@ private struct SelectionActionBarView: View {
         #if !os(tvOS)
         .background(Color(UIColor.tertiarySystemBackground))
         #else
-        .background(Color.white.opacity(0.08))
+        .background(Color.interfaceCardSurface(opacity: 0.08))
         #endif
         .onAppear {
             updateState()
@@ -426,10 +426,10 @@ private struct BottomInformationBarView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(folderSummaryString)
                     .font(.caption)
-                    .foregroundColor(.primary)
+                    .foregroundColor(Color.interfacePrimaryLabel)
                 Text("Available Space: \(freeDiskSpaceString)")
                     .font(.caption2)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
             }
             Spacer()
             
@@ -449,7 +449,7 @@ private struct BottomInformationBarView: View {
         #if !os(tvOS)
         .background(Color(UIColor.secondarySystemBackground))
         #else
-        .background(Color.white.opacity(0.1))
+        .background(Color.interfaceCardSurface(opacity: 0.1))
         #endif
         .onAppear {
             updateState()
@@ -676,7 +676,7 @@ private struct ItemRow: View {
                     }
                 }
                 .font(.caption)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
             }
             
             Spacer()

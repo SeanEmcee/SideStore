@@ -140,7 +140,7 @@ public struct EntitlementsCustomizationCoreView: View {
             .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .stroke(Color.white.opacity(0.12), lineWidth: 1)
+                    .stroke(Color.interfaceBorder(opacity: 0.12), lineWidth: 1)
             )
             .shadow(color: Color.black.opacity(0.4), radius: 24, x: 0, y: 12)
             .padding(.horizontal, 20)
@@ -155,12 +155,12 @@ public struct EntitlementsCustomizationCoreView: View {
             VStack(alignment: .leading, spacing: 3) {
                 Text("Customize Entitlements")
                     .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(.primary)
+                    .foregroundColor(Color.interfacePrimaryLabel)
 
                 if viewModel.targets.count <= 1 {
                     Text(viewModel.bundleID)
                         .font(.system(size: 12, weight: .medium, design: .monospaced))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                         .lineLimit(1)
                 }
             }
@@ -183,7 +183,7 @@ public struct EntitlementsCustomizationCoreView: View {
                     .frame(maxWidth: .infinity)
                     .frame(height: 44)
                     .background(Color(UIColor.secondarySystemGroupedBackground))
-                    .foregroundColor(.primary)
+                    .foregroundColor(Color.interfacePrimaryLabel)
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             }
 
@@ -226,7 +226,7 @@ public struct EntitlementsCustomizationCoreView: View {
                     if viewModel.targets.count <= 1 {
                         Text(viewModel.bundleID)
                             .font(.system(size: 12, weight: .medium, design: .monospaced))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                             .lineLimit(1)
                     }
                     Spacer()
@@ -272,7 +272,7 @@ public struct EntitlementsCustomizationCoreView: View {
                         HStack(spacing: 6) {
                             Text(viewModel.currentTarget?.name ?? viewModel.selectedTargetID)
                                 .font(.system(size: 14, weight: .semibold))
-                                .foregroundColor(.primary)
+                                .foregroundColor(Color.interfacePrimaryLabel)
 
                             Text(viewModel.currentTarget?.isExtension == true ? "Extension" : "Main App")
                                 .font(.system(size: 10, weight: .semibold))
@@ -280,12 +280,12 @@ public struct EntitlementsCustomizationCoreView: View {
                                 .padding(.vertical, 2)
                                 .background(Color.secondary.opacity(0.15))
                                 .clipShape(Capsule())
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                         }
 
                         Text(viewModel.selectedTargetID)
                             .font(.system(size: 11, design: .monospaced))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                             .lineLimit(1)
                     }
 
@@ -293,7 +293,7 @@ public struct EntitlementsCustomizationCoreView: View {
 
                     Image(systemName: "chevron.up.chevron.down")
                         .font(.system(size: 12, weight: .semibold))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 }
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)
@@ -307,7 +307,7 @@ public struct EntitlementsCustomizationCoreView: View {
     private var searchBar: some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
                 .font(.system(size: 14))
 
             TextField("Search entitlements...", text: $viewModel.searchQuery)
@@ -319,7 +319,7 @@ public struct EntitlementsCustomizationCoreView: View {
                     viewModel.searchQuery = ""
                 }) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                         .font(.system(size: 14))
                 }
             }
@@ -336,7 +336,7 @@ public struct EntitlementsCustomizationCoreView: View {
             HStack {
                 Text("ACTIVE ENTITLEMENTS (\(viewModel.filteredActiveEntries.count))")
                     .font(.system(size: 12, weight: .bold))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
 
                 Spacer()
             }
@@ -346,10 +346,10 @@ public struct EntitlementsCustomizationCoreView: View {
                 VStack(spacing: 6) {
                     Text("No active entitlements")
                         .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                     Text("Select additional entitlements below or tap '+' to add one.")
                         .font(.system(size: 12))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 24)
@@ -384,7 +384,7 @@ public struct EntitlementsCustomizationCoreView: View {
                     HStack(spacing: 6) {
                         Text(entry.key)
                             .font(.system(size: 13, weight: .semibold, design: .monospaced))
-                            .foregroundColor(.primary)
+                            .foregroundColor(Color.interfacePrimaryLabel)
                             .lineLimit(isKeyExpanded ? nil : 1)
                             .contentShape(Rectangle())
                             .onTapGesture {
@@ -425,7 +425,7 @@ public struct EntitlementsCustomizationCoreView: View {
                     if let known = Entitlement.allKnown.first(where: { $0.id == entry.key }) {
                         Text(known.displayName)
                             .font(.system(size: 12, weight: .medium))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                     }
                 }
 
@@ -469,7 +469,7 @@ public struct EntitlementsCustomizationCoreView: View {
             if entry.arrayValue.isEmpty {
                 Text("No values (empty array)")
                     .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
             } else {
                 ForEach(Array(entry.arrayValue.enumerated()), id: \.offset) { index, item in
                     let itemKey = "\(entry.id.uuidString)-arr-\(index)"
@@ -477,7 +477,7 @@ public struct EntitlementsCustomizationCoreView: View {
                     HStack(spacing: 6) {
                         Text(item)
                             .font(.system(size: 12, design: .monospaced))
-                            .foregroundColor(.primary)
+                            .foregroundColor(Color.interfacePrimaryLabel)
                             .lineLimit(isItemExpanded ? nil : 1)
                             .contentShape(Rectangle())
                             .onTapGesture {
@@ -535,7 +535,7 @@ public struct EntitlementsCustomizationCoreView: View {
             HStack {
                 Text("AVAILABLE FOR YOUR ACCOUNT (\(available.count))")
                     .font(.system(size: 12, weight: .bold))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
 
                 Spacer()
             }
@@ -544,7 +544,7 @@ public struct EntitlementsCustomizationCoreView: View {
             if available.isEmpty {
                 Text("All permitted account entitlements have been added.")
                     .font(.system(size: 13))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)
             } else {
@@ -573,11 +573,11 @@ public struct EntitlementsCustomizationCoreView: View {
                 HStack(spacing: 6) {
                     Text(entitlement.displayName)
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundColor(.primary)
+                        .foregroundColor(Color.interfacePrimaryLabel)
 
                     Text(entitlement.valueType.rawValue)
                         .font(.system(size: 9, weight: .bold))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                         .padding(.horizontal, 5)
                         .padding(.vertical, 2)
                         .background(Color(UIColor.tertiarySystemGroupedBackground))
@@ -586,12 +586,12 @@ public struct EntitlementsCustomizationCoreView: View {
 
                 Text(entitlement.rawValue)
                     .font(.system(size: 11, design: .monospaced))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .lineLimit(isEntExpanded ? nil : 1)
 
                 Text(entitlement.summary)
                     .font(.system(size: 11))
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .lineLimit(isEntExpanded ? nil : 2)
             }
             .contentShape(Rectangle())

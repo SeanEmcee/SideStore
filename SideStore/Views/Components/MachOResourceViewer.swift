@@ -68,14 +68,14 @@ struct MachOResourceViewer: View {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(cert.name)
                                     .font(.subheadline)
-                                    .foregroundColor(.primary)
+                                    .foregroundColor(Color.interfacePrimaryLabel)
                                 Text("Serial: \(cert.serialNumber)")
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                                 if cert.expiryDate != Date.distantPast {
                                     Text("Expires: \(formatDate(cert.expiryDate))")
                                         .font(.caption)
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(Color.interfaceSecondaryLabel)
                                 }
                             }
                             .padding(.vertical, 2)
@@ -94,7 +94,7 @@ struct MachOResourceViewer: View {
                                 Spacer()
                                 Text("XML")
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                             }
                         }
                     }
@@ -107,11 +107,11 @@ struct MachOResourceViewer: View {
                             HStack(alignment: .top, spacing: 8) {
                                 Image(systemName: "cpu")
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                                     .padding(.top, 2)
                                 Text(lib)
                                     .font(.system(size: 12, design: .monospaced))
-                                    .foregroundColor(.primary)
+                                    .foregroundColor(Color.interfacePrimaryLabel)
                             }
                             .padding(.vertical, 2)
                         }
@@ -129,7 +129,7 @@ struct MachOResourceViewer: View {
                                 Spacer()
                                 Text("offset: \(String(format: "0x%llX", seg.offset))  size: \(ByteCountFormatter.string(fromByteCount: Int64(seg.size), countStyle: .file))")
                                     .font(.system(size: 11, design: .monospaced))
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                             }
                         }
                     }
@@ -154,7 +154,7 @@ struct MachOResourceViewer: View {
                         .font(.headline)
                     Text("Could not parse \(url.lastPathComponent) as a valid Mach-O binary.")
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
                 }

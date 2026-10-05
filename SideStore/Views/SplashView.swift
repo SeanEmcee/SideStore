@@ -51,14 +51,14 @@ struct SplashView: View {
 
                 Text(Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "SideStore")
                     .font(.system(size: 24, weight: .bold))
-                    .foregroundColor(.primary)
+                    .foregroundColor(Color.interfacePrimaryLabel)
 
                 Spacer()
 
                 if !viewModel.status.isEmpty {
                     Text(viewModel.status)
                         .font(.system(size: 14))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                         .transition(.opacity)
                 }
             }

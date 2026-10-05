@@ -128,7 +128,7 @@ struct SideJITServerConfigView: View {
                             .font(.body.weight(.semibold))
                         Text("Required for JIT on iOS 17+")
                             .font(.caption)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                     }
                 }
             }
@@ -155,7 +155,7 @@ struct SideJITServerConfigView: View {
                         .frame(width: 8, height: 8)
                     Text(connectionStatus.title)
                         .font(.subheadline.weight(.medium))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 }
             }
             
@@ -187,7 +187,7 @@ struct SideJITServerConfigView: View {
                 Spacer()
                 Text(customAddress.isEmpty ? "Auto (Bonjour mDNS)" : "Manual Override")
                     .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
             }
         }
     }
@@ -218,7 +218,7 @@ struct SideJITServerConfigView: View {
                         refreshServerState()
                     } label: {
                         Image(systemName: "xmark.circle.fill")
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                     }
                     .buttonStyle(.plain)
                 }
@@ -233,7 +233,7 @@ struct SideJITServerConfigView: View {
             } label: {
                 HStack {
                     Label("Test Connection (Ping)", systemImage: "network")
-                        .foregroundColor(.primary)
+                        .foregroundColor(Color.interfacePrimaryLabel)
                     Spacer()
                     if activeAction == .ping {
                         ProgressView()
@@ -250,7 +250,7 @@ struct SideJITServerConfigView: View {
             } label: {
                 HStack {
                     Label("Refresh Device Cache (/re/)", systemImage: "arrow.clockwise")
-                        .foregroundColor(.primary)
+                        .foregroundColor(Color.interfacePrimaryLabel)
                     Spacer()
                     if activeAction == .refresh {
                         ProgressView()
@@ -267,7 +267,7 @@ struct SideJITServerConfigView: View {
             } label: {
                 HStack {
                     Label("Check Version Info (/ver/)", systemImage: "info.circle")
-                        .foregroundColor(.primary)
+                        .foregroundColor(Color.interfacePrimaryLabel)
                     Spacer()
                     if activeAction == .version {
                         ProgressView()
@@ -294,7 +294,7 @@ struct SideJITServerConfigView: View {
                     
                     Text(log.endpoint)
                         .font(.system(.caption, design: .monospaced))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                         .lineLimit(1)
                     
                     Spacer()
@@ -305,14 +305,14 @@ struct SideJITServerConfigView: View {
                     
                     Text("\(log.latencyMs)ms")
                         .font(.caption2)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 }
                 
                 ScrollView(.vertical, showsIndicators: true) {
                     ScrollView(.horizontal, showsIndicators: false) {
                         Text(log.prettyPayload)
                             .font(.system(.caption, design: .monospaced))
-                            .foregroundColor(.primary)
+                            .foregroundColor(Color.interfacePrimaryLabel)
                             .multilineTextAlignment(.leading)
                             .padding(10)
                     }
@@ -323,7 +323,7 @@ struct SideJITServerConfigView: View {
                 #if !os(tvOS)
                 .background(Color(UIColor.secondarySystemGroupedBackground))
                 #else
-                .background(Color.white.opacity(0.1))
+                .background(Color.interfaceCardSurface(opacity: 0.1))
                 #endif
                 .cornerRadius(8)
                 .overlay(
@@ -350,11 +350,11 @@ struct SideJITServerConfigView: View {
             VStack(alignment: .leading, spacing: 6) {
                 Text("SideJITServer attaches Apple's debugserver service on macOS to running apps on iOS 17+ over local Wi-Fi or USB.")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                 
                 Text("When SideStore triggers JIT, SideJITServer sends the debug attach signal and enables Just-In-Time execution instantly.")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
             }
             .padding(.vertical, 2)
         }

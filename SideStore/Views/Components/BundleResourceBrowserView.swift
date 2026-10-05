@@ -47,7 +47,7 @@ struct BundleResourceBrowserView: View {
             if filteredItems.isEmpty {
                 Text(items.isEmpty ? "Empty directory" : "No results")
                     .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
             } else {
                 ForEach(filteredItems) { item in
                     BundleItemRow(
@@ -181,10 +181,10 @@ struct BundleItemRow: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(item.name)
                     .font(.subheadline)
-                    .foregroundColor(.primary)
+                    .foregroundColor(Color.interfacePrimaryLabel)
                 Text(subtitle)
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
             }
             Spacer()
 
@@ -372,7 +372,7 @@ struct IPAContentsView: View {
                         .scaleEffect(1.5)
                     Text("Extracting \(ipaURL.lastPathComponent)...")
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .navigationTitle(ipaURL.deletingPathExtension().lastPathComponent)
@@ -388,7 +388,7 @@ struct IPAContentsView: View {
                         .font(.headline)
                     Text(error)
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
                 }
@@ -447,7 +447,7 @@ struct FullAppBundleView: View {
                     if let bundleID = infoPlist?["CFBundleIdentifier"] as? String {
                         Text(bundleID)
                             .font(.subheadline)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                     }
                 }
                 .padding(.vertical, 8)
@@ -476,11 +476,11 @@ struct FullAppBundleView: View {
                             HStack {
                                 Text("Executable")
                                     .font(.subheadline)
-                                    .foregroundColor(.primary)
+                                    .foregroundColor(Color.interfacePrimaryLabel)
                                 Spacer()
                                 Text(exec)
                                     .font(.subheadline)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                             }
                         }
                     } else {
@@ -498,10 +498,10 @@ struct FullAppBundleView: View {
                                 .font(.subheadline)
                             Text("UUID: \(profile.uuid.uuidString)")
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                             Text("Expires: \(formatDate(profile.expirationDate))")
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                         }
                     }
                 }
@@ -532,7 +532,7 @@ struct FullAppBundleView: View {
                                     .font(.subheadline)
                                 Text(extBundleID)
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color.interfaceSecondaryLabel)
                             }
                         }
                     }
@@ -623,10 +623,10 @@ struct ResourceImageViewer: View {
                 VStack(spacing: 12) {
                     Image(systemName: "photo.slash")
                         .font(.system(size: 44))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                     Text("Could not load image")
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
@@ -734,7 +734,7 @@ struct ProvisioningProfileResourceViewer: View {
                         .font(.headline)
                     Text("Could not decode provisioning profile from \(url.lastPathComponent).")
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
                 }

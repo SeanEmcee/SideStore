@@ -142,13 +142,13 @@ struct BonjourDiscoveryView: View {
         VStack(spacing: 16) {
             Image(systemName: "network")
                 .font(.system(size: 48))
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
             Text("No Domains Found")
                 .font(.headline)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
             Text("Make sure you're connected to a local network.")
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
             
@@ -163,12 +163,12 @@ struct BonjourDiscoveryView: View {
             VStack(spacing: 8) {
                 Text("Ensure **Local Network Access** is provided otherwise this function may not work as intended since it is based on L N A...")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .multilineTextAlignment(.center)
                 
                 Text("**Settings -> apps -> SideStore -> LocalNetworkAccess = toggle on**")
                     .font(.caption.bold())
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .multilineTextAlignment(.center)
             }
             .padding(.top, 12)
@@ -350,13 +350,13 @@ struct ServiceTypesView: View {
         VStack(spacing: 16) {
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 48))
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
             Text("No Services Found")
                 .font(.headline)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
             Text("No Bonjour services are currently advertised in this domain.")
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
             
@@ -371,12 +371,12 @@ struct ServiceTypesView: View {
             VStack(spacing: 8) {
                 Text("Ensure **Local Network Access** is provided otherwise this function may not work as intended since it is based on L N A...")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .multilineTextAlignment(.center)
                 
                 Text("**Settings -> apps -> SideStore -> LocalNetworkAccess = toggle on**")
                     .font(.caption.bold())
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .multilineTextAlignment(.center)
             }
             .padding(.top, 12)
@@ -412,7 +412,7 @@ struct ServiceTypesView: View {
                                             .lineLimit(1)
                                         Text(typeInfo.rawType)
                                             .font(.caption)
-                                            .foregroundColor(.secondary)
+                                            .foregroundColor(Color.interfaceSecondaryLabel)
                                             .lineLimit(1)
                                     } else {
                                         Text(typeInfo.rawType)
@@ -446,7 +446,7 @@ struct ServiceTypesView: View {
                     .scaleEffect(0.8)
                 Text("Searching…")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
             }
         }
     }
@@ -596,13 +596,13 @@ struct ServiceInstancesView: View {
         VStack(spacing: 16) {
             Image(systemName: "antenna.radiowaves.left.and.right.slash")
                 .font(.system(size: 48))
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
             Text("No Instances Found")
                 .font(.headline)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
             Text("No devices are currently advertising this service.")
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
             
@@ -617,12 +617,12 @@ struct ServiceInstancesView: View {
             VStack(spacing: 8) {
                 Text("Ensure **Local Network Access** is provided otherwise this function may not work as intended since it is based on L N A...")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .multilineTextAlignment(.center)
                 
                 Text("**Settings -> apps -> SideStore -> LocalNetworkAccess = toggle on**")
                     .font(.caption.bold())
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                     .multilineTextAlignment(.center)
             }
             .padding(.top, 12)
@@ -675,7 +675,7 @@ struct ServiceInstancesView: View {
                     .scaleEffect(0.8)
                 Text("Searching…")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
             }
         }
     }
@@ -811,7 +811,7 @@ struct ServiceDetailView: View {
                 .scaleEffect(1.2)
             Text("Resolving service…")
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
         }
     }
     
@@ -822,10 +822,10 @@ struct ServiceDetailView: View {
                 .foregroundColor(.orange)
             Text("Resolution Failed")
                 .font(.headline)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
             Text(message)
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
             
@@ -869,7 +869,7 @@ struct ServiceDetailView: View {
                     if let purpose = BonjourDiscoveryManager.friendlyName(for: resolved.type) {
                         Text(purpose)
                             .font(.caption)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal, 8)
                     }
@@ -884,13 +884,13 @@ struct ServiceDetailView: View {
                         
                         Text(BonjourDiscoveryViewModel.portCategory(for: resolved.port))
                             .font(.system(size: 11, weight: .medium, design: .rounded))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 3)
                             #if !os(tvOS)
                             .background(Capsule().fill(Color(.tertiarySystemFill)))
                             #else
-                            .background(Capsule().fill(Color.white.opacity(0.15)))
+                            .background(Capsule().fill(Color.interfaceCardSurface(opacity: 0.15)))
                             #endif
                     }
                     .padding(.top, 2)
@@ -920,14 +920,14 @@ struct ServiceDetailView: View {
                     ForEach(service.interfaces, id: \.index) { iface in
                         HStack {
                             Image(systemName: iconForInterfaceType(iface.type))
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                                 .frame(width: 24)
                             Text(iface.name)
                                 .font(.body)
                             Spacer()
                             Text(nameForInterfaceType(iface.type))
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                         }
                         .contentShape(Rectangle())
                         #if !os(tvOS)
@@ -969,10 +969,10 @@ struct ServiceDetailView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(record.key)
                                 .font(.subheadline.weight(.semibold))
-                                .foregroundColor(.primary)
+                                .foregroundColor(Color.interfacePrimaryLabel)
                             Text(record.value)
                                 .font(.system(.caption, design: .monospaced))
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color.interfaceSecondaryLabel)
                                 .lineLimit(nil)
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -1004,7 +1004,7 @@ struct ServiceDetailView: View {
                             .foregroundColor(.accentColor)
                         Text(rec.content)
                             .font(.system(.caption, design: .monospaced))
-                            .foregroundColor(.secondary)
+                            .foregroundColor(Color.interfaceSecondaryLabel)
                             .lineLimit(nil)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -1122,17 +1122,17 @@ private struct DetailRow: View {
             HStack(spacing: 6) {
                 Text(label)
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                 if let tag = tag, !tag.isEmpty {
                     Text(tag)
                         .font(.system(size: 10, weight: .semibold, design: .monospaced))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.interfaceSecondaryLabel)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 1)
                         #if !os(tvOS)
                         .background(Capsule().fill(Color(.tertiarySystemFill)))
                         #else
-                        .background(Capsule().fill(Color.white.opacity(0.15)))
+                        .background(Capsule().fill(Color.interfaceCardSurface(opacity: 0.15)))
                         #endif
                 }
             }

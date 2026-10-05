@@ -228,7 +228,7 @@ struct ConnectionConfigView: View {
                             .foregroundColor(Color.interfaceText)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 16)
-                            .background(Color.white.opacity(0.12))
+                            .background(Color.interfaceCardSurface(opacity: 0.12))
                             .clipShape(Capsule())
                     }
                     .buttonStyle(PlainButtonStyle())

@@ -35,7 +35,7 @@ struct CertificateRowView: View {
                     Text("Serial: ").font(.system(size: 11))
                     + Text(displaySerial).font(.system(size: 11, design: .monospaced))
                 )
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
                 
                 if let displayIdent = viewModel.displayIdentifier(for: cert) {
                     (
@@ -55,7 +55,7 @@ struct CertificateRowView: View {
                         Text("Requester: ").font(.system(size: 10))
                         + Text(displayReq).font(isHidden ? .system(size: 10, design: .monospaced) : .system(size: 10))
                     )
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                 }
                 
                 if let createdBy = viewModel.displayCreatedBy(for: cert) {
@@ -64,14 +64,14 @@ struct CertificateRowView: View {
                         Text("Created By: ").font(.system(size: 10))
                         + Text(createdBy).font(isHidden ? .system(size: 10, design: .monospaced) : .system(size: 10))
                     )
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.interfaceSecondaryLabel)
                 }
                 
                 (
                     Text("Keys: ").font(.system(size: 10))
                     + Text(hasPrivateKey ? "public + private" : "public").font(.system(size: 10))
                 )
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
             }
             
             Spacer()
@@ -137,20 +137,20 @@ private struct CertBriefInfoView: View {
                 Text("Type: ").font(.system(size: 10))
                 + Text(displayType).font(isTypeHidden ? .system(size: 10, design: .monospaced) : .system(size: 10))
             )
-            .foregroundColor(.secondary)
+            .foregroundColor(Color.interfaceSecondaryLabel)
             if let typeName = viewModel.displayCertificateTypeName(for: cert) {
                 let isTypeNameHidden = typeName.contains("•")
                 (
                     Text("Type Name: ").font(.system(size: 10))
                     + Text(typeName).font(isTypeNameHidden ? .system(size: 10, design: .monospaced) : .system(size: 10))
                 )
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.interfaceSecondaryLabel)
             }
             (
                 Text("Validity: ").font(.system(size: 10))
                 + Text(displayValidity).font(isValidityHidden ? .system(size: 10, design: .monospaced) : .system(size: 10))
             )
-            .foregroundColor(.secondary)
+            .foregroundColor(Color.interfaceSecondaryLabel)
         }
     }
 }
