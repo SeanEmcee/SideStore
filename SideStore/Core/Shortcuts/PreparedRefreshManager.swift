@@ -105,7 +105,8 @@ actor PreparedRefreshManager {
                 throw PreparedRefreshError.configuration("No configured pairing file is available.")
             }
             syncMinimuxerBackendFromUserDefaults()
-            let binding = try DeviceSocketBinding.activateIfAvailable()
+            let binding = try DeviceSocketBinding.activateIfAvailable(
+                allowDirectHandshake: PairingFileManager.shared.preferredProtocol == .rppairing)
             defer { DeviceSocketBinding.deactivate() }
             if let binding = binding {
                 debugLog("[VPNBound] activated for prepared installation: interface=\(binding.interfaceName), source=\(binding.localIP), target=\(binding.targetIP)")
@@ -113,16 +114,25 @@ actor PreparedRefreshManager {
                 debugLog("[VPNBound] inactive: no up utun interface has 10.7.0.2; using the existing transport")
             }
             try await minimuxerStart(pairing, preferred: PairingFileManager.shared.preferredProtocol)
-            // Needs proper testing on a locked iPhone: bypass Wi-Fi policy, never device readiness.
+            // Needs proper phone testing: skip TCP preflight only; readiness still performs the real pairing handshake.
             let deadline = Date().addingTimeInterval(5)
             var ready = false
+            var lastReadinessError: Error?
             while Date() < deadline {
                 try Task.checkCancellation()
                 await minimuxer.network.refreshEndpoint()
-                if case .success(true) = await minimuxer.core.isReady(withNetworkCheck: false) { ready = true; break }
+                let result = await minimuxer.core.isReady(withNetworkCheck: false)
+                if case .success(true) = result { ready = true; break }
+                if case .failure(let error) = result {
+                    lastReadinessError = error
+                    debugLog("[PreparedRefresh] Device readiness failed: \(error.localizedDescription)")
+                }
                 try await Task.sleep(nanoseconds: 200_000_000)
             }
-            guard ready else { throw PreparedRefreshError.configuration("The local device endpoint did not become ready. Check sing-box and the SideStore connection configuration.") }
+            guard ready else {
+                let reason = lastReadinessError.map { " Details: \($0.localizedDescription)" } ?? ""
+                throw PreparedRefreshError.configuration("The local device connection did not become ready.\(reason)")
+            }
             let liveUDID = try await fetchUDID(forceLive: true)
             for entry in job.apps {
                 try Task.checkCancellation()
@@ -165,9 +175,13 @@ actor PreparedRefreshManager {
                 }
                 completed += 1
             }
+            DeviceSocketBinding.deactivate()
+            await minimuxer.network.refreshEndpoint() // Restore measured reachability after the diagnostic scope.
             await recordAttempt(db: db, error: nil)
             return "Refreshed \(completed) app(s). Installed profiles verified through the local device connection."
         } catch {
+            DeviceSocketBinding.deactivate()
+            await minimuxer.network.refreshEndpoint()
             let db = DatabaseManager.shared.persistentContainer.newBackgroundContext()
             await recordAttempt(db: db, error: error)
             debugLog("[PreparedRefresh] Installation failed after \(completed) app(s): \(error.localizedDescription)")

@@ -94,6 +94,10 @@ def patch_minimuxer(root, framework):
             do {
                 try binding.apply(to: fd)
                 debugLog("[VPNBound] probe: interface=\\(binding.interfaceName), source=\\(binding.localIP), target=\\(ip):\\(port)")
+                if DeviceSocketBinding.shouldSkipPreliminaryProbe(ip: ip, port: port) {
+                    debugLog("[VPNBound] diagnostic: TCP preflight skipped; real pairing handshake required for \\(ip):\\(port)")
+                    return true
+                }
             } catch {
                 debugLog("[VPNBound] probe binding failed: \\(error)")
                 return false

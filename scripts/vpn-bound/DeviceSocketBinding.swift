@@ -36,6 +36,7 @@ public enum DeviceSocketBinding {
     private final class State: @unchecked Sendable {
         let lock = NSLock()
         var binding: Binding?
+        var allowDirectHandshake = false
     }
     private static let state = State()
 
@@ -45,9 +46,16 @@ public enum DeviceSocketBinding {
         return state.binding?.targetIP == targetIP ? state.binding : nil
     }
 
+    /// Diagnostic policy only: bypass TCP preflight, never the actual pairing handshake.
+    public static func shouldSkipPreliminaryProbe(ip: String, port: UInt16) -> Bool {
+        state.lock.lock()
+        defer { state.lock.unlock() }
+        return state.allowDirectHandshake && state.binding?.targetIP == ip && port == 49152
+    }
+
     /// Find the intended tunnel by its address, never by a hardcoded utun number.
     @discardableResult
-    public static func activateIfAvailable() throws -> Binding? {
+    public static func activateIfAvailable(allowDirectHandshake: Bool = false) throws -> Binding? {
         var head: UnsafeMutablePointer<ifaddrs>?
         guard getifaddrs(&head) == 0 else {
             throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno))
@@ -80,13 +88,24 @@ public enum DeviceSocketBinding {
         }
         state.lock.lock()
         state.binding = binding
+        state.allowDirectHandshake = binding != nil && allowDirectHandshake
         state.lock.unlock()
         return binding
     }
 
+    #if VPN_BOUND_TESTING
+    static func activateForTesting(_ binding: Binding?, allowDirectHandshake: Bool) {
+        state.lock.lock()
+        state.binding = binding
+        state.allowDirectHandshake = binding != nil && allowDirectHandshake
+        state.lock.unlock()
+    }
+    #endif
+
     public static func deactivate() {
         state.lock.lock()
         state.binding = nil
+        state.allowDirectHandshake = false
         state.lock.unlock()
     }
 }

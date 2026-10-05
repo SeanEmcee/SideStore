@@ -25,7 +25,7 @@ jobs:
           /tmp/prepared-refresh-tests
       - name: Test Swift VPN socket binding
         run: |
-          swiftc scripts/vpn-bound/DeviceSocketBinding.swift scripts/vpn-bound/tests/main.swift -o /tmp/vpn-binding-tests
+          swiftc -D VPN_BOUND_TESTING scripts/vpn-bound/DeviceSocketBinding.swift scripts/vpn-bound/tests/main.swift -o /tmp/vpn-binding-tests
           /tmp/vpn-binding-tests
       - name: Install packaging tools
         run: brew install ldid xcbeautify
@@ -43,6 +43,8 @@ jobs:
           git clone https://github.com/SideStore/idevice.git build/idevice
           git -C build/idevice checkout 3e55c8486b2057e40c1f74aaaa1155c82341cf76
           python3 scripts/vpn-bound/patch_dependencies.py --idevice build/idevice --minimuxer Dependencies/minimuxer
+          swiftc -D VPN_BOUND_TESTING Dependencies/minimuxer/Common/DeviceSocketBinding.swift Dependencies/minimuxer/Common/NetworkUtils.swift Dependencies/minimuxer/Common/MinimuxerCommonLogging.swift Dependencies/minimuxer/Common/MinimuxerConstants.swift scripts/vpn-bound/tests/preflight/main.swift -o /tmp/preflight-tests
+          /tmp/preflight-tests 2>&1 | tee build/logs/preflight.log
           bash scripts/vpn-bound/build-transport.sh 2>&1 | tee build/logs/transport.log
       - name: Build and package
         shell: bash
