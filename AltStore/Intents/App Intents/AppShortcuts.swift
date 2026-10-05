@@ -13,6 +13,9 @@ public struct ShortcutsProvider: AppShortcutsProvider
 {
     public static var appShortcuts: [AppShortcut] {
         #if !os(tvOS)
+        AppShortcut(intent: RefreshWithoutDataTogglesIntent(),
+                    phrases: ["Refresh without data toggles with \(.applicationName)"],
+                    shortTitle: "Refresh Without Toggles", systemImageName: "antenna.radiowaves.left.and.right")
         AppShortcut(intent: PrepareAppRefreshIntent(),
                     phrases: ["Prepare refresh with \(.applicationName)"],
                     shortTitle: "Prepare App Refresh", systemImageName: "arrow.down.doc")

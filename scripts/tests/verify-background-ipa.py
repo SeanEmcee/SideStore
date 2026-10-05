@@ -8,10 +8,10 @@ with zipfile.ZipFile(sys.argv[1]) as ipa:
     assert info["CFBundleIdentifier"] == "com.SideStore.SideStore", info["CFBundleIdentifier"]
     executable = ipa.read("Payload/SideStore.app/" + info["CFBundleExecutable"])
     assert executable[:4] in (b"\xcf\xfa\xed\xfe", b"\xca\xfe\xba\xbe")
-    for text in (b"PrepareAppRefreshIntent", b"InstallPreparedRefreshIntent"):
+    for text in (b"PrepareAppRefreshIntent", b"InstallPreparedRefreshIntent", b"RefreshWithoutDataTogglesIntent"):
         assert text in executable, f"Missing intent {text!r}"
     metadata = json.loads(ipa.read("Payload/SideStore.app/Metadata.appintents/extract.actionsdata"))
-    for name in ("PrepareAppRefreshIntent", "InstallPreparedRefreshIntent"):
+    for name in ("PrepareAppRefreshIntent", "InstallPreparedRefreshIntent", "RefreshWithoutDataTogglesIntent"):
         action = metadata["actions"][name]
         assert action["openAppWhenRun"] is False, f"{name} requests foreground launch"
         assert action["isDiscoverable"] is True

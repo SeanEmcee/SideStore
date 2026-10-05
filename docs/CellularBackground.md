@@ -1,6 +1,6 @@
 # Custom SideStore: themes and prepared cellular refresh
 
-This fork adds interface color controls and two separate background Shortcuts actions. The original Wi-Fi refresh and foreground cellular flow remain available.
+This fork adds interface color controls, an experimental refresh action that leaves cellular data on, and two separate prepared-refresh actions. The original Wi-Fi refresh and foreground cellular flow remain available.
 
 ## Install the IPA
 
@@ -20,7 +20,19 @@ Reset beside a control restores that component. Reset to SideStore Classic resto
 
 Images, app artwork, system alerts/color-picker windows, widgets, and semantic status colors have their own appearance; these are not a pixel-by-pixel skin editor. Some screens need to be revisited on older iOS releases. Live dynamic color updates use the iOS 17+ custom trait system.
 
-## Create the cellular shortcut
+## Test refresh with cellular data left on
+
+The new **SideStore → Refresh Apps Without Data Toggles** action prepares profiles online, installs them through the configured device connection, and verifies the installed profiles. It has `openAppWhenRun = false` and never invokes TurnOffData, TurnOnData, or a native cellular toggle. Build a shortcut containing this action, followed by an optional notification using its text output. Disable Show When Run if offered.
+
+This removes the data-switching behavior from the action. It does not make an unreachable device service reachable. The existing `10.7.0.1` reflection endpoint was not reachable with cellular data on during the user's test, and Include All Networks did not resolve it. Continuous cellular refresh remains experimental until a different connection path succeeds on the iPhone.
+
+A separate sing-box test profile adds aliases `10.7.0.2` (routes to the phone's `127.0.0.1`) and `10.7.0.3` (routes to `::1`), bound to `lo0`. Both TCP and UDP use the same local translation; the port stays unchanged. It retains the original `10.7.0.1` reflection and Tailscale routes. The JSON passes sing-box 1.14.2's configuration checker, but that does not establish that iOS device services listen on localhost or permit this route.
+
+Keep Include All Networks off. Import the test profile separately, connect it, leave cellular data on and Wi-Fi disconnected, and set SideStore's explicit endpoint to `10.7.0.2`, port `49152`, Use Local VPN off. Check Reachable before running the new action. If it is not reachable, test `10.7.0.3` with the same port. Restore `10.7.0.1` and the original profile if neither works. No pairing reset or certificate revocation is part of this test.
+
+Success requires a verified profile installation, a renewed expiry, and a successful refresh record while cellular data stays on. Then test the same action from a scheduled automation with the phone locked; unlocked success does not establish locked background support.
+
+## Optional two-phase cellular workaround
 
 Keep sing-box MT connected. Keep the working on-device reflection configuration and Tailscale routes. In SideStore, keep the known working explicit endpoint: **Use Local VPN off**, Device IP `10.7.0.1`, RemotePair Port `49152`, and your Remote Pairing file. Turning off Use Local VPN here changes endpoint discovery, not the sing-box VPN connection.
 
@@ -49,4 +61,4 @@ GitHub compilation, storage tests, and IPA checks establish that the code builds
 
 ## Build
 
-The workflow `.github/workflows/cellular-background.yml` runs on the `cellular-background` branch. It tests single-use job storage, archives the iOS app with Xcode, packages the IPA, checks the bundle and intent symbols, and uploads the IPA, checksum, and build log. Pairing files and Apple signing credentials are not required or uploaded by this workflow.
+The workflow `.github/workflows/cellular-background.yml` runs on the `cellular-background` branch. It tests single-use job storage, archives the iOS app with Xcode, packages the IPA, checks the bundle and all three new intents' metadata, and uploads the IPA, checksum, and build log. Pairing files and Apple signing credentials are not required or uploaded by this workflow.

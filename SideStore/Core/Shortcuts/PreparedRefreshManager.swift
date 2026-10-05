@@ -3,7 +3,8 @@ import CoreData
 import SideSign
 import Minimuxer
 
-/// The caller owns cellular toggling. Neither phase opens SideStore or Shortcuts.
+/// Neither phase changes cellular data or opens SideStore or Shortcuts.
+/// A caller may choose a two-phase data-toggle workaround if its VPN requires it.
 actor PreparedRefreshManager {
     static let shared = PreparedRefreshManager()
     private var isRunning = false
