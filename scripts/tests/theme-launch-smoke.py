@@ -7,13 +7,17 @@ import tempfile
 
 
 def run(*args, timeout=120):
-    return subprocess.check_output(args, text=True, stderr=subprocess.STDOUT, timeout=timeout)
+    try:
+        return subprocess.check_output(args, text=True, stderr=subprocess.STDOUT, timeout=timeout)
+    except subprocess.CalledProcessError as error:
+        print(error.output)
+        raise
 
 
 runtime = next(r for r in json.loads(run("xcrun", "simctl", "list", "runtimes", "-j"))["runtimes"]
                if r["isAvailable"] and r["identifier"].startswith("com.apple.CoreSimulator.SimRuntime.iOS"))
-device_type = next(d for d in reversed(json.loads(run("xcrun", "simctl", "list", "devicetypes", "-j"))["devicetypes"])
-                   if d["name"].startswith("iPhone"))
+device_type = next(d for d in json.loads(run("xcrun", "simctl", "list", "devicetypes", "-j"))["devicetypes"]
+                   if d["name"] == "iPhone 17 Pro")
 device = run("xcrun", "simctl", "create", "SideStore Theme Launch Test",
              device_type["identifier"], runtime["identifier"]).strip()
 try:
