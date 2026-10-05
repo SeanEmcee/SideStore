@@ -1,4 +1,5 @@
 import plistlib
+import json
 import sys
 import zipfile
 
@@ -9,5 +10,13 @@ with zipfile.ZipFile(sys.argv[1]) as ipa:
     assert executable[:4] in (b"\xcf\xfa\xed\xfe", b"\xca\xfe\xba\xbe")
     for text in (b"PrepareAppRefreshIntent", b"InstallPreparedRefreshIntent"):
         assert text in executable, f"Missing intent {text!r}"
+    metadata = json.loads(ipa.read("Payload/SideStore.app/Metadata.appintents/extract.actionsdata"))
+    for name in ("PrepareAppRefreshIntent", "InstallPreparedRefreshIntent"):
+        action = metadata["actions"][name]
+        assert action["openAppWhenRun"] is False, f"{name} requests foreground launch"
+        assert action["isDiscoverable"] is True
+        assert "outputType" in action
+    assert any(parameter["name"] == "job" and not parameter["isOptional"]
+               for parameter in metadata["actions"]["InstallPreparedRefreshIntent"]["parameters"])
     assert "Payload/SideStore.app/PlugIns/AltWidgetExtension.appex/Info.plist" in ipa.namelist()
-    print("IPA main bundle, device binary, both background intents, and widget checked.")
+    print("IPA bundle, device binary, discoverable non-opening intent metadata, required job parameter, and widget checked.")
