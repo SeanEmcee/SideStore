@@ -10,6 +10,8 @@ with zipfile.ZipFile(sys.argv[1]) as ipa:
     assert executable[:4] in (b"\xcf\xfa\xed\xfe", b"\xca\xfe\xba\xbe")
     for text in (b"PrepareAppRefreshIntent", b"InstallPreparedRefreshIntent", b"RefreshWithoutDataTogglesIntent"):
         assert text in executable, f"Missing intent {text!r}"
+    for text in (b"[VPNBound] activated", b"device-tunnel", b"invalid VPN socket binding"):
+        assert text in executable, f"Missing VPN transport marker {text!r}"
     metadata = json.loads(ipa.read("Payload/SideStore.app/Metadata.appintents/extract.actionsdata"))
     for name in ("PrepareAppRefreshIntent", "InstallPreparedRefreshIntent", "RefreshWithoutDataTogglesIntent"):
         action = metadata["actions"][name]

@@ -11,7 +11,7 @@ concurrency:
 jobs:
   build:
     runs-on: macos-26
-    timeout-minutes: 60
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
         with:
@@ -23,10 +23,26 @@ jobs:
         run: |
           swiftc SideStore/Core/Shortcuts/PreparedRefreshJobStore.swift scripts/tests/prepared-refresh-main.swift -o /tmp/prepared-refresh-tests
           /tmp/prepared-refresh-tests
+      - name: Test Swift VPN socket binding
+        run: |
+          swiftc scripts/vpn-bound/DeviceSocketBinding.swift scripts/vpn-bound/tests/main.swift -o /tmp/vpn-binding-tests
+          /tmp/vpn-binding-tests
       - name: Install packaging tools
         run: brew install ldid xcbeautify
       - name: Test first-launch theme application in UIKit
         run: python3 scripts/tests/theme-launch-smoke.py
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-ios,aarch64-apple-ios-sim
+      - name: Build and test VPN-bound device transport
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/logs
+          git clone https://github.com/SideStore/idevice.git build/idevice
+          git -C build/idevice checkout 3e55c8486b2057e40c1f74aaaa1155c82341cf76
+          python3 scripts/vpn-bound/patch_dependencies.py --idevice build/idevice --minimuxer Dependencies/minimuxer
+          bash scripts/vpn-bound/build-transport.sh 2>&1 | tee build/logs/transport.log
       - name: Build and package
         shell: bash
         run: |
@@ -48,4 +64,4 @@ jobs:
         if: always()
         with:
           name: build-log
-          path: build/logs/build.log
+          path: build/logs/*.log

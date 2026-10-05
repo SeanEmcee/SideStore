@@ -2,6 +2,7 @@ import Foundation
 import CoreData
 import SideSign
 import Minimuxer
+import MinimuxerCommon
 
 /// Neither phase changes cellular data or opens SideStore or Shortcuts.
 /// A caller may choose a two-phase data-toggle workaround if its VPN requires it.
@@ -92,6 +93,13 @@ actor PreparedRefreshManager {
                 throw PreparedRefreshError.configuration("No configured pairing file is available.")
             }
             syncMinimuxerBackendFromUserDefaults()
+            let binding = try DeviceSocketBinding.activateIfAvailable()
+            defer { DeviceSocketBinding.deactivate() }
+            if let binding = binding {
+                debugLog("[VPNBound] activated for prepared installation: interface=\(binding.interfaceName), source=\(binding.localIP), target=\(binding.targetIP)")
+            } else {
+                debugLog("[VPNBound] inactive: no up utun interface has 10.7.0.2; using the existing transport")
+            }
             try await minimuxerStart(pairing, preferred: PairingFileManager.shared.preferredProtocol)
             // Needs proper testing on a locked iPhone: bypass Wi-Fi policy, never device readiness.
             let deadline = Date().addingTimeInterval(5)
