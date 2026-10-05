@@ -33,6 +33,7 @@ jobs:
         run: python3 scripts/tests/theme-launch-smoke.py
       - uses: dtolnay/rust-toolchain@stable
         with:
+          components: rustfmt
           targets: aarch64-apple-ios,aarch64-apple-ios-sim
       - name: Build and test VPN-bound device transport
         shell: bash

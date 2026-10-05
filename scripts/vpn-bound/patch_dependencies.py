@@ -5,6 +5,7 @@ and the existing unbound FFI entry point are preserved.
 """
 import argparse
 import json
+import os
 from pathlib import Path
 import subprocess
 
@@ -135,7 +136,8 @@ def patch_minimuxer(root, framework):
     text = path.read_text(encoding="utf-8")
     start = text.index('         .binaryTarget(\n             name: "IDevice",')
     end = text.index("         ),", start) + len("         ),")
-    text = text[:start] + f'         .binaryTarget(name: "IDevice", path: {json.dumps(str(framework.resolve()).replace(chr(92), chr(47)))}),' + text[end:]
+    relative_framework = Path(os.path.relpath(framework.resolve(), path.parent.resolve())).as_posix()
+    text = text[:start] + f'         .binaryTarget(name: "IDevice", path: {json.dumps(relative_framework)}),' + text[end:]
     path.write_text(text, encoding="utf-8", newline="\n")
 
 
