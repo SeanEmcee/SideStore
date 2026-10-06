@@ -161,10 +161,13 @@ mod tests {
             local_ip: Ipv4Addr::LOCALHOST,
             interface_index: index,
         };
-        // Reserve a port without listening so the real connect must be refused.
-        let reserved = tokio::net::TcpSocket::new_v4().unwrap();
-        reserved.bind((Ipv4Addr::LOCALHOST, 0).into()).unwrap();
-        let target = reserved.local_addr().unwrap();
+        // A bound non-listening Darwin socket can silently hold SYNs. Close a real
+        // listener instead so the connect reaches a port with no owning socket.
+        let listener = tokio::net::TcpListener::bind((Ipv4Addr::LOCALHOST, 0))
+            .await
+            .unwrap();
+        let target = listener.local_addr().unwrap();
+        drop(listener);
         let cause = tokio::time::timeout(
             std::time::Duration::from_secs(2),
             connect(target, Some(binding), "rppairing"),
