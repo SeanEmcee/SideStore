@@ -56,6 +56,7 @@ public enum DeviceSocketBinding {
     /// Find the intended tunnel by its address, never by a hardcoded utun number.
     @discardableResult
     public static func activateIfAvailable(allowDirectHandshake: Bool = false) throws -> Binding? {
+        deactivate()
         var head: UnsafeMutablePointer<ifaddrs>?
         guard getifaddrs(&head) == 0 else {
             throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno))
@@ -63,11 +64,19 @@ public enum DeviceSocketBinding {
         defer { if let head = head { freeifaddrs(head) } }
         var cursor = head
         var names = Set<String>()
+        var hasWiFiAddress = false
         var expected = in_addr()
         inet_pton(AF_INET, "10.7.0.2", &expected)
         while let entry = cursor {
             let info = entry.pointee
             let name = String(cString: info.ifa_name)
+            // Preserve the ordinary Wi-Fi transport; this experiment is for cellular.
+            if name == "en0", (info.ifa_flags & UInt32(IFF_UP)) != 0,
+               let address = info.ifa_addr, address.pointee.sa_family == sa_family_t(AF_INET) {
+                hasWiFiAddress = address.withMemoryRebound(to: sockaddr_in.self, capacity: 1) {
+                    $0.pointee.sin_addr.s_addr != 0
+                } || hasWiFiAddress
+            }
             if name.hasPrefix("utun"), (info.ifa_flags & UInt32(IFF_UP)) != 0,
                let address = info.ifa_addr, address.pointee.sa_family == sa_family_t(AF_INET) {
                 let matches = address.withMemoryRebound(to: sockaddr_in.self, capacity: 1) {
@@ -77,6 +86,7 @@ public enum DeviceSocketBinding {
             }
             cursor = info.ifa_next
         }
+        if hasWiFiAddress { return nil }
         guard names.count <= 1 else {
             throw NSError(domain: "VPNBoundTransport", code: 1,
                           userInfo: [NSLocalizedDescriptionKey: "Multiple VPN interfaces have 10.7.0.2; the device route is ambiguous."])

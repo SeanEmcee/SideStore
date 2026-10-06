@@ -44,13 +44,31 @@ pub(crate) async fn connect(
             binding.local_ip
         );
         let started = std::time::Instant::now();
-        let stream = socket.connect(target).await.map_err(|error| {
-            eprintln!(
-                "[VPNBound] {stage}: TCP connect failed after {}ms: kind={:?}, os_code={:?}, message={error}",
-                started.elapsed().as_millis(), error.kind(), error.raw_os_error()
-            );
-            error
-        })?;
+        let stream = match socket.connect(target).await {
+            Ok(stream) => stream,
+            Err(error) => {
+                eprintln!(
+                    "[VPNBound] {stage}: TCP connect failed after {}ms: kind={:?}, os_code={:?}, message={error}",
+                    started.elapsed().as_millis(),
+                    error.kind(),
+                    error.raw_os_error()
+                );
+                // Needs phone testing: reflection replies may conflict with IP_BOUND_IF.
+                // Retain the VPN source and endpoint; only release interface pinning.
+                if !should_retry_with_route(target, binding, stage, &error) {
+                    return Err(error);
+                }
+                eprintln!(
+                    "[VPNBound] {stage}: retrying with VPN source and system route; target={target}; source={}",
+                    binding.local_ip
+                );
+                let socket = source_bound_socket(binding)?;
+                socket.connect(target).await.map_err(|retry_error| {
+                    eprintln!("[VPNBound] {stage}: route-selected retry failed: {retry_error}; original scoped error: {error}");
+                    retry_error
+                })?
+            }
+        };
         eprintln!(
             "[VPNBound] {stage}: connected from {}",
             stream.local_addr()?
@@ -65,6 +83,29 @@ pub(crate) async fn connect(
             "VPN-bound transport requires Darwin",
         ))
     }
+}
+
+fn should_retry_with_route(
+    target: SocketAddr,
+    binding: Binding,
+    stage: &str,
+    error: &std::io::Error,
+) -> bool {
+    target.ip() == std::net::IpAddr::V4(Ipv4Addr::new(10, 7, 0, 1))
+        && binding.local_ip == Ipv4Addr::new(10, 7, 0, 2)
+        && matches!(stage, "rppairing" | "device-tunnel")
+        && matches!(
+            error.kind(),
+            std::io::ErrorKind::ConnectionRefused | std::io::ErrorKind::ConnectionReset
+        )
+}
+
+#[cfg(target_vendor = "apple")]
+fn source_bound_socket(binding: Binding) -> std::io::Result<tokio::net::TcpSocket> {
+    // Do not remove source binding or retry socket setup failures as unbound traffic.
+    let socket = tokio::net::TcpSocket::new_v4()?;
+    socket.bind(SocketAddr::new(binding.local_ip.into(), 0))?;
+    Ok(socket)
 }
 
 // Preserve the OS cause through FFI instead of IdeviceError::Socket's generic Display.
@@ -135,6 +176,90 @@ mod tests {
             assert_eq!(&response, b"scoped");
             server.await.unwrap();
         }
+    }
+
+    #[tokio::test]
+    async fn route_selected_connection_keeps_source_binding() {
+        use tokio::io::{AsyncReadExt, AsyncWriteExt};
+        let listener = tokio::net::TcpListener::bind((Ipv4Addr::LOCALHOST, 0))
+            .await
+            .unwrap();
+        let target = listener.local_addr().unwrap();
+        let server = tokio::spawn(async move {
+            let (mut stream, peer) = listener.accept().await.unwrap();
+            assert_eq!(peer.ip(), Ipv4Addr::LOCALHOST);
+            stream.write_all(b"route").await.unwrap();
+        });
+        let binding = Binding {
+            local_ip: Ipv4Addr::LOCALHOST,
+            interface_index: unsafe { libc::if_nametoindex(c"lo0".as_ptr()) },
+        };
+        let socket = source_bound_socket(binding).unwrap();
+        assert_eq!(
+            socket.local_addr().unwrap().ip(),
+            std::net::IpAddr::V4(Ipv4Addr::LOCALHOST)
+        );
+        use std::os::fd::AsRawFd;
+        let mut index: u32 = u32::MAX;
+        let mut length = std::mem::size_of::<u32>() as libc::socklen_t;
+        assert_eq!(
+            unsafe {
+                libc::getsockopt(
+                    socket.as_raw_fd(),
+                    libc::IPPROTO_IP,
+                    libc::IP_BOUND_IF,
+                    &mut index as *mut u32 as *mut libc::c_void,
+                    &mut length,
+                )
+            },
+            0
+        );
+        assert_eq!(index, 0);
+        let mut stream = socket.connect(target).await.unwrap();
+        let mut response = [0; 5];
+        stream.read_exact(&mut response).await.unwrap();
+        assert_eq!(&response, b"route");
+        server.await.unwrap();
+    }
+
+    #[test]
+    fn route_retry_is_limited_to_local_reflection_connect_errors() {
+        let binding = Binding {
+            local_ip: Ipv4Addr::new(10, 7, 0, 2),
+            interface_index: 40,
+        };
+        let target: SocketAddr = "10.7.0.1:49152".parse().unwrap();
+        let refused = std::io::Error::from_raw_os_error(libc::ECONNREFUSED);
+        assert!(should_retry_with_route(
+            target,
+            binding,
+            "rppairing",
+            &refused
+        ));
+        assert!(should_retry_with_route(
+            "10.7.0.1:51368".parse().unwrap(),
+            binding,
+            "device-tunnel",
+            &refused
+        ));
+        assert!(!should_retry_with_route(
+            "100.64.0.1:49152".parse().unwrap(),
+            binding,
+            "rppairing",
+            &refused
+        ));
+        assert!(!should_retry_with_route(
+            target,
+            binding,
+            "rppairing",
+            &std::io::Error::from_raw_os_error(libc::ENXIO)
+        ));
+        assert!(!should_retry_with_route(
+            target,
+            binding,
+            "rppairing",
+            &std::io::Error::from_raw_os_error(libc::ETIMEDOUT)
+        ));
     }
 
     #[tokio::test]

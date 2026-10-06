@@ -143,6 +143,13 @@ def patch_minimuxer(root, framework):
 ''' + "\n".join("    " + line for line in old.splitlines()) + '''
                 }'''
     replace(path, old, new)
+    replace(path, '            let msg = String(cString: msgPtr).lowercased()', '''            let msg = String(cString: msgPtr).lowercased()
+            // A transport-stage name is not proof of an invalid pairing record.
+            if err.pointee.code == 16 &&
+               (msg.contains("rppairing tcp connect failed:") ||
+                msg.contains("device-tunnel tcp connect failed:")) {
+                return false
+            }''')
     path = root / "DeviceGateway/Package.swift"
     text = path.read_text(encoding="utf-8")
     start = text.index('         .binaryTarget(\n             name: "IDevice",')

@@ -111,7 +111,7 @@ actor PreparedRefreshManager {
             if let binding = binding {
                 debugLog("[VPNBound] activated for prepared installation: interface=\(binding.interfaceName), source=\(binding.localIP), target=\(binding.targetIP)")
             } else {
-                debugLog("[VPNBound] inactive: no up utun interface has 10.7.0.2; using the existing transport")
+                debugLog("[VPNBound] inactive: Wi-Fi has an address or the expected VPN is unavailable; using the existing transport")
             }
             try await minimuxerStart(pairing, preferred: PairingFileManager.shared.preferredProtocol)
             // Needs proper phone testing: skip TCP preflight only; readiness still performs the real pairing handshake.

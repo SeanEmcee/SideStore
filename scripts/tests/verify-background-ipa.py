@@ -12,7 +12,8 @@ with zipfile.ZipFile(sys.argv[1]) as ipa:
         assert text in executable, f"Missing intent {text!r}"
     for text in (b"[VPNBound] activated", b"device-tunnel", b"invalid VPN socket binding",
                  b"TCP preflight skipped; real pairing handshake required",
-                 b"TCP connect failed after", b"TCP connect failed:", b"os_code="):
+                 b"TCP connect failed after", b"TCP connect failed:", b"os_code=",
+                 b"retrying with VPN source and system route", b"Wi-Fi has an address"):
         assert text in executable, f"Missing VPN transport marker {text!r}"
     metadata = json.loads(ipa.read("Payload/SideStore.app/Metadata.appintents/extract.actionsdata"))
     for name in ("PrepareAppRefreshIntent", "InstallPreparedRefreshIntent", "RefreshWithoutDataTogglesIntent"):
