@@ -101,6 +101,15 @@ pub(crate) fn connection_error(
 #[cfg(all(test, target_vendor = "apple"))]
 mod tests {
     use super::*;
+
+    fn ffi_message(error: idevice::IdeviceError) -> String {
+        let ffi = crate::ffi_err!(error);
+        let message = unsafe { std::ffi::CStr::from_ptr((*ffi).message) }
+            .to_string_lossy()
+            .into_owned();
+        unsafe { crate::errors::idevice_error_free(ffi) };
+        message
+    }
     #[tokio::test]
     async fn scoped_initial_and_tunnel_connections() {
         use tokio::io::{AsyncReadExt, AsyncWriteExt};
@@ -154,50 +163,56 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn refused_connection_preserves_os_cause_through_ffi() {
-        let index = unsafe { libc::if_nametoindex(c"lo0".as_ptr()) };
-        assert_ne!(index, 0);
+    async fn native_socket_error_preserves_os_cause_through_ffi() {
         let binding = Binding {
             local_ip: Ipv4Addr::LOCALHOST,
-            interface_index: index,
+            interface_index: u32::MAX,
         };
-        // A bound non-listening Darwin socket can silently hold SYNs. Close a real
-        // listener instead so the connect reaches a port with no owning socket.
+        // A missing interface produces a deterministic real OS socket error,
+        // without depending on the runner's treatment of closed-port SYNs.
         let listener = tokio::net::TcpListener::bind((Ipv4Addr::LOCALHOST, 0))
             .await
             .unwrap();
         let target = listener.local_addr().unwrap();
-        drop(listener);
-        let cause = tokio::time::timeout(
-            std::time::Duration::from_secs(2),
-            connect(target, Some(binding), "rppairing"),
-        )
-        .await
-        .unwrap()
-        .unwrap_err();
-        assert_eq!(cause.kind(), std::io::ErrorKind::ConnectionRefused);
-        assert_eq!(cause.raw_os_error(), Some(libc::ECONNREFUSED));
-        let message =
-            connection_error(cause.into(), Some(binding), "rppairing", target).to_string();
-        assert!(message.contains("rppairing TCP connect failed: kind=ConnectionRefused"));
-        assert!(message.contains(&format!("os_code=Some({})", libc::ECONNREFUSED)));
+        let cause = connect(target, Some(binding), "rppairing")
+            .await
+            .unwrap_err();
+        let expected_kind = format!("kind={:?}", cause.kind());
+        let code = cause
+            .raw_os_error()
+            .expect("Darwin binding failure needs an OS code");
+        let message = ffi_message(connection_error(
+            cause.into(),
+            Some(binding),
+            "rppairing",
+            target,
+        ));
+        assert!(message.contains("rppairing TCP connect failed:"));
+        assert!(message.contains(&expected_kind));
+        assert!(message.contains(&format!("os_code=Some({code})")));
         assert!(message.contains(&format!("target={target}")));
-        assert!(message.contains(&format!("source=127.0.0.1; interface={index}")));
-        let unbound = connection_error(
+        assert!(message.contains(&format!("source=127.0.0.1; interface={}", u32::MAX)));
+        let refused = ffi_message(connection_error(
+            std::io::Error::from_raw_os_error(libc::ECONNREFUSED).into(),
+            Some(binding),
+            "rppairing",
+            target,
+        ));
+        assert!(refused.contains("kind=ConnectionRefused"));
+        assert!(refused.contains(&format!("os_code=Some({})", libc::ECONNREFUSED)));
+        let unbound = ffi_message(connection_error(
             std::io::Error::from_raw_os_error(libc::ECONNREFUSED).into(),
             None,
             "rppairing",
             target,
-        )
-        .to_string();
+        ));
         assert!(unbound.contains("connect: device socket io failed"));
-        let timeout = connection_error(
+        let timeout = ffi_message(connection_error(
             idevice::IdeviceError::Timeout,
             Some(binding),
             "device-tunnel",
             target,
-        )
-        .to_string();
+        ));
         assert!(timeout.contains("device-tunnel TCP connect failed: Timeout"));
     }
 }
