@@ -13,6 +13,11 @@ def run(*args, timeout=120):
     except subprocess.CalledProcessError as error:
         print(error.output)
         raise
+    except subprocess.TimeoutExpired as error:
+        print(f"Timed out while running {args}")
+        if error.output:
+            print(error.output.decode(errors="replace") if isinstance(error.output, bytes) else error.output)
+        raise
 
 
 runtime = next(r for r in json.loads(run("xcrun", "simctl", "list", "runtimes", "-j"))["runtimes"]
