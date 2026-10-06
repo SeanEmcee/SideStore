@@ -13,7 +13,8 @@ with zipfile.ZipFile(sys.argv[1]) as ipa:
     for text in (b"[VPNBound] activated", b"device-tunnel", b"invalid VPN socket binding",
                  b"TCP preflight skipped; real pairing handshake required",
                  b"TCP connect failed after", b"TCP connect failed:", b"os_code=",
-                 b"retrying with VPN source and system route", b"Wi-Fi has an address"):
+                 b"retrying with VPN source and system route", b"Wi-Fi has an address",
+                 b"cellular-denied socket verified", b"cellular-denied retry failed"):
         assert text in executable, f"Missing VPN transport marker {text!r}"
     metadata = json.loads(ipa.read("Payload/SideStore.app/Metadata.appintents/extract.actionsdata"))
     for name in ("PrepareAppRefreshIntent", "InstallPreparedRefreshIntent", "RefreshWithoutDataTogglesIntent"):

@@ -63,10 +63,31 @@ pub(crate) async fn connect(
                     binding.local_ip
                 );
                 let socket = source_bound_socket(binding)?;
-                socket.connect(target).await.map_err(|retry_error| {
-                    eprintln!("[VPNBound] {stage}: route-selected retry failed: {retry_error}; original scoped error: {error}");
-                    retry_error
-                })?
+                match socket.connect(target).await {
+                    Ok(stream) => stream,
+                    Err(retry_error) => {
+                        eprintln!(
+                            "[VPNBound] {stage}: route-selected retry failed: {retry_error}; original scoped error: {error}"
+                        );
+                        if !should_retry_with_route(target, binding, stage, &retry_error) {
+                            return Err(retry_error);
+                        }
+                        // Needs phone testing: prohibit cellular for this device socket only.
+                        // This does not change the radio, the device listener, or readiness.
+                        eprintln!(
+                            "[VPNBound] {stage}: retrying with cellular denied on the device socket; target={target}; source={}",
+                            binding.local_ip
+                        );
+                        let socket = cellular_denied_socket(binding).map_err(|policy_error| {
+                            eprintln!("[VPNBound] {stage}: cellular-denied socket setup failed: {policy_error}");
+                            policy_error
+                        })?;
+                        socket.connect(target).await.map_err(|policy_error| {
+                            eprintln!("[VPNBound] {stage}: cellular-denied retry failed: kind={:?}, os_code={:?}, message={policy_error}", policy_error.kind(), policy_error.raw_os_error());
+                            policy_error
+                        })?
+                    }
+                }
             }
         };
         eprintln!(
@@ -105,6 +126,53 @@ fn source_bound_socket(binding: Binding) -> std::io::Result<tokio::net::TcpSocke
     // Do not remove source binding or retry socket setup failures as unbound traffic.
     let socket = tokio::net::TcpSocket::new_v4()?;
     socket.bind(SocketAddr::new(binding.local_ip.into(), 0))?;
+    Ok(socket)
+}
+
+#[cfg(target_vendor = "apple")]
+fn cellular_denied_socket(binding: Binding) -> std::io::Result<tokio::net::TcpSocket> {
+    use std::os::fd::AsRawFd;
+    // Apple XNU bsd/netinet/in_private.h: internal option, not a stable SDK API.
+    // ip_output.c sets SO_RESTRICT_DENY_CELLULAR; getsockopt reads INP_NO_CELLULAR.
+    // Fail explicitly if this OS does not support or retain it; never pretend success.
+    const IP_NO_IFT_CELLULAR: libc::c_int = 6969;
+    let socket = source_bound_socket(binding)?;
+    let enabled: libc::c_int = 1;
+    let result = unsafe {
+        libc::setsockopt(
+            socket.as_raw_fd(),
+            libc::IPPROTO_IP,
+            IP_NO_IFT_CELLULAR,
+            &enabled as *const _ as *const libc::c_void,
+            std::mem::size_of_val(&enabled) as libc::socklen_t,
+        )
+    };
+    if result != 0 {
+        return Err(std::io::Error::last_os_error());
+    }
+    let mut measured: libc::c_int = 0;
+    let mut length = std::mem::size_of_val(&measured) as libc::socklen_t;
+    let result = unsafe {
+        libc::getsockopt(
+            socket.as_raw_fd(),
+            libc::IPPROTO_IP,
+            IP_NO_IFT_CELLULAR,
+            &mut measured as *mut _ as *mut libc::c_void,
+            &mut length,
+        )
+    };
+    if result != 0 {
+        return Err(std::io::Error::last_os_error());
+    }
+    if measured != 1 || length as usize != std::mem::size_of_val(&measured) {
+        return Err(std::io::Error::other(
+            "device socket did not retain cellular restriction",
+        ));
+    }
+    eprintln!(
+        "[VPNBound] cellular-denied socket verified: IP_NO_IFT_CELLULAR=1; source={}; system route",
+        binding.local_ip
+    );
     Ok(socket)
 }
 
@@ -220,6 +288,63 @@ mod tests {
         stream.read_exact(&mut response).await.unwrap();
         assert_eq!(&response, b"route");
         server.await.unwrap();
+    }
+
+    #[tokio::test]
+    async fn cellular_denied_policy_keeps_local_transport_and_real_failure() {
+        use std::os::fd::AsRawFd;
+        use tokio::io::{AsyncReadExt, AsyncWriteExt};
+        fn cellular_flag(socket: &tokio::net::TcpSocket) -> libc::c_int {
+            let mut value: libc::c_int = -1;
+            let mut length = std::mem::size_of_val(&value) as libc::socklen_t;
+            assert_eq!(
+                unsafe {
+                    libc::getsockopt(
+                        socket.as_raw_fd(),
+                        libc::IPPROTO_IP,
+                        6969,
+                        &mut value as *mut _ as *mut libc::c_void,
+                        &mut length,
+                    )
+                },
+                0
+            );
+            value
+        }
+        let binding = Binding {
+            local_ip: Ipv4Addr::LOCALHOST,
+            interface_index: unsafe { libc::if_nametoindex(c"lo0".as_ptr()) },
+        };
+        let ordinary = source_bound_socket(binding).unwrap();
+        assert_eq!(cellular_flag(&ordinary), 0);
+        let socket = cellular_denied_socket(binding).unwrap();
+        assert_eq!(cellular_flag(&socket), 1);
+        assert_eq!(socket.local_addr().unwrap().ip(), binding.local_ip);
+        let listener = tokio::net::TcpListener::bind((Ipv4Addr::LOCALHOST, 0))
+            .await
+            .unwrap();
+        let target = listener.local_addr().unwrap();
+        let server = tokio::spawn(async move {
+            let (mut stream, peer) = listener.accept().await.unwrap();
+            assert_eq!(peer.ip(), Ipv4Addr::LOCALHOST);
+            stream.write_all(b"local").await.unwrap();
+        });
+        let mut stream = socket.connect(target).await.unwrap();
+        let mut response = [0; 5];
+        stream.read_exact(&mut response).await.unwrap();
+        assert_eq!(&response, b"local");
+        server.await.unwrap();
+        let listener = tokio::net::TcpListener::bind((Ipv4Addr::LOCALHOST, 0))
+            .await
+            .unwrap();
+        let closed_port = listener.local_addr().unwrap();
+        drop(listener);
+        let error = cellular_denied_socket(binding)
+            .unwrap()
+            .connect(closed_port)
+            .await
+            .unwrap_err();
+        assert_eq!(error.kind(), std::io::ErrorKind::ConnectionRefused);
     }
 
     #[test]
