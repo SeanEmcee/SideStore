@@ -37,6 +37,8 @@ def patch_idevice(root):
             "    connect_addr: std::net::SocketAddr,\n    binding: Option<crate::vpn_binding::Binding>,\n)")
     replace(path, "run_global_timeout(|| tokio::net::TcpStream::connect(tunnel_addr))",
             'run_global_timeout(|| crate::vpn_binding::connect(tunnel_addr, binding, "device-tunnel"))')
+    replace(path, '.map_err(|e| IdeviceError::InternalError(format!("TLS tunnel: {e}")))?;',
+            '.map_err(|e| crate::vpn_binding::connection_error(e, binding, "device-tunnel", tunnel_addr))?;')
     # RemoteXPC continues to use its original unbound behavior.
     replace(path, "finish_tunnel(&mut rpc, socket_addr).await", "finish_tunnel(&mut rpc, socket_addr, None).await", count=2)
     text = path.read_text(encoding="utf-8")
@@ -49,6 +51,11 @@ def patch_idevice(root):
                               "    out_handshake: *mut *mut RsdHandshakeHandle,\n    binding: Option<crate::vpn_binding::Binding>,\n)")
     patched = patched.replace("run_global_timeout(|| tokio::net::TcpStream::connect(socket_addr))",
                               'run_global_timeout(|| crate::vpn_binding::connect(socket_addr, binding, "rppairing"))')
+    connect_error = '.map_err(|e| IdeviceError::InternalError(format!("connect: {e}")))?;'
+    if patched.count(connect_error) != 1:
+        raise RuntimeError("Remote Pairing connect error anchor changed")
+    patched = patched.replace(connect_error,
+                              '.map_err(|e| crate::vpn_binding::connection_error(e, binding, "rppairing", socket_addr))?;')
     patched = patched.replace("finish_tunnel(&mut rpc, socket_addr, None).await",
                               "finish_tunnel(&mut rpc, socket_addr, binding).await")
     signature = original[original.index("    addr:"):original.index(") -> *mut IdeviceFfiError")]
