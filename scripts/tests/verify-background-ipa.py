@@ -15,8 +15,12 @@ with zipfile.ZipFile(sys.argv[1]) as ipa:
                  b"TCP connect failed after", b"TCP connect failed:", b"os_code=",
                  b"retrying with VPN source and system route", b"Wi-Fi has an address",
                  b"[VPNRecovery] controller acknowledged settings reapply", b"[VPNRecovery] rebound:",
-                 b"[VPNRecovery] fresh handshake ready=", b"127.0.0.1:51831", b"cache/dns/flush"):
+                 b"[VPNRecovery] fresh handshake ready=", b"127.0.0.1:51831"):
         assert text in executable, f"Missing VPN transport marker {text!r}"
+    # Swift encodes short strings (including the 15-byte cache/dns/flush path) in
+    # immediate values, so byte searching cannot validate them. The Swift HTTP
+    # request test checks the complete URL path; these long markers verify that
+    # its recovery caller and controller configuration were linked into the IPA.
     metadata = json.loads(ipa.read("Payload/SideStore.app/Metadata.appintents/extract.actionsdata"))
     for name in ("PrepareAppRefreshIntent", "InstallPreparedRefreshIntent", "RefreshWithoutDataTogglesIntent"):
         action = metadata["actions"][name]
