@@ -342,7 +342,13 @@ final class PipelineRunner: Sendable
             context.appBundleFingerprint = app.appBundleFingerprint
             context.useMainProfile = app.useMainProfile
             context.customBundleIdentifier = app.customBundleIdentifier
-            context.targetAppBundle = ALTApplication(fileURL: app.fileURL)
+            if case .refresh = operation {
+                context.targetAppBundle = try await group.dbContext.perform {
+                    try app.loadBundleForRefreshing()
+                }
+            } else {
+                context.targetAppBundle = ALTApplication(fileURL: app.fileURL)
+            }
         }
         
         context.beginInstallationHandler = { (installedApp) in

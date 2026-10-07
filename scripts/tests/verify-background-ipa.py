@@ -15,7 +15,8 @@ with zipfile.ZipFile(sys.argv[1]) as ipa:
                  b"TCP connect failed after", b"TCP connect failed:", b"os_code=",
                  b"retrying with VPN source and system route", b"Wi-Fi has an address",
                  b"[VPNRecovery] controller acknowledged settings reapply", b"[VPNRecovery] rebound:",
-                 b"[VPNRecovery] fresh handshake ready=", b"127.0.0.1:51831"):
+                 b"[VPNRecovery] fresh handshake ready=", b"127.0.0.1:51831",
+                 b"[RefreshBundle] Using matching installed SideStore bundle for profile-only refresh."):
         assert text in executable, f"Missing VPN transport marker {text!r}"
     # Swift encodes short strings (including the 15-byte cache/dns/flush path) in
     # immediate values, so byte searching cannot validate them. The Swift HTTP

@@ -33,7 +33,7 @@ actor PreparedRefreshManager {
         var entries: [PreparedRefreshJob.App] = []
         for app in apps {
             try Task.checkCancellation()
-            let context = await db.perform {
+            let context = try await db.perform {
                 let context = InstallAppOperationContext(
                     pipelineSteps: PipelineStepDefinition.refresh,
                     bundleIdentifier: app.bundleIdentifier,
@@ -43,11 +43,8 @@ actor PreparedRefreshManager {
                 context.installedApp = app
                 context.customBundleIdentifier = app.customBundleIdentifier
                 context.useMainProfile = app.useMainProfile
-                context.targetAppBundle = ALTApplication(fileURL: app.fileURL)
+                context.targetAppBundle = try app.loadBundleForRefreshing()
                 return context
-            }
-            guard context.targetAppBundle != nil else {
-                throw PreparedRefreshError.configuration("An installed app is not cached. Refresh it normally on Wi-Fi once before using prepared refresh.")
             }
             AppManager.shared.set(Progress(totalUnitCount: 100), for: .refresh(app))
             defer { AppManager.shared.set(nil, for: .refresh(app)) }

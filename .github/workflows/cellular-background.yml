@@ -31,6 +31,10 @@ jobs:
         run: |
           swiftc -parse-as-library SideStore/Core/Shortcuts/LocalVPNRecovery.swift scripts/tests/local-vpn-recovery.swift -o /tmp/local-vpn-recovery-tests
           /tmp/local-vpn-recovery-tests
+      - name: Test refresh bundle recovery identities
+        run: |
+          swiftc -parse-as-library SideStore/Core/Operations/RefreshBundleResolver.swift scripts/tests/refresh-bundle-resolver.swift -o /tmp/refresh-bundle-tests
+          /tmp/refresh-bundle-tests
       - name: Install packaging tools
         run: brew install ldid xcbeautify
       - name: Test first-launch theme application in UIKit
