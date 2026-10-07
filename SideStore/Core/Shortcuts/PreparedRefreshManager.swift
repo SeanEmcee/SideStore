@@ -103,6 +103,7 @@ actor PreparedRefreshManager {
             }
             syncMinimuxerBackendFromUserDefaults()
             VPNInterfaceDiagnostics.log(phase: "before-handshake")
+            VPNListenerDiagnostics.log(phase: "before-handshake")
             let binding = try DeviceSocketBinding.activateIfAvailable(
                 allowDirectHandshake: PairingFileManager.shared.preferredProtocol == .rppairing)
             defer { DeviceSocketBinding.deactivate() }
@@ -120,6 +121,7 @@ actor PreparedRefreshManager {
                 try Task.checkCancellation()
                 lastReadinessError = error
             }
+            VPNListenerDiagnostics.log(phase: "after-initial-handshake")
             if !ready {
                 let recovery = LocalVPNRecovery()
                 let failure = lastReadinessError?.localizedDescription ?? ""
@@ -152,6 +154,7 @@ actor PreparedRefreshManager {
                         (ready, lastReadinessError) = try await waitForDeviceReadiness()
                         debugLog("[VPNRecovery] fresh handshake ready=\(ready)")
                         VPNInterfaceDiagnostics.log(phase: "after-recovery-handshake")
+                        VPNListenerDiagnostics.log(phase: "after-recovery-handshake")
                     } else {
                         debugLog("[VPNRecovery] skipped: not configured or not an eligible cellular TCP failure")
                     }
