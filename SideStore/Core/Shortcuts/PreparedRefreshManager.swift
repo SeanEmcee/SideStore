@@ -87,7 +87,7 @@ actor PreparedRefreshManager {
         return token
     }
 
-    /// Always return a status for recoverable errors, so Shortcuts reaches Set Cellular Data On.
+    /// Return a status for recoverable errors without launching any helper shortcuts.
     func install(token: String) async -> String {
         guard !isRunning, !AppManager.shared.isActivelyManagingAnyApp else {
             return "Refresh failed: another app operation is running."
@@ -113,21 +113,53 @@ actor PreparedRefreshManager {
             } else {
                 debugLog("[VPNBound] inactive: Wi-Fi has an address or the expected VPN is unavailable; using the existing transport")
             }
-            try await minimuxerStart(pairing, preferred: PairingFileManager.shared.preferredProtocol)
-            // Needs proper phone testing: skip TCP preflight only; readiness still performs the real pairing handshake.
-            let deadline = Date().addingTimeInterval(5)
             var ready = false
             var lastReadinessError: Error?
-            while Date() < deadline {
+            do {
+                try await minimuxerStart(pairing, preferred: PairingFileManager.shared.preferredProtocol)
+                (ready, lastReadinessError) = try await waitForDeviceReadiness()
+            } catch {
                 try Task.checkCancellation()
-                await minimuxer.network.refreshEndpoint()
-                let result = await minimuxer.core.isReady(withNetworkCheck: false)
-                if case .success(true) = result { ready = true; break }
-                if case .failure(let error) = result {
-                    lastReadinessError = error
-                    debugLog("[PreparedRefresh] Device readiness failed: \(error.localizedDescription)")
+                lastReadinessError = error
+            }
+            if !ready {
+                let recovery = LocalVPNRecovery()
+                let failure = lastReadinessError?.localizedDescription ?? ""
+                do {
+                    if try await recovery.attempt(token: LocalVPNRecoveryKey.load(),
+                        isCellularVPN: binding?.targetIP == "10.7.0.1",
+                        isRemotePairing: PairingFileManager.shared.preferredProtocol == .rppairing,
+                        failure: failure) {
+                        debugLog("[VPNRecovery] controller acknowledged settings reapply; verifying a fresh handshake")
+                        try Task.checkCancellation()
+                        try await minimuxerStop() // Discard the old gateway adapter and pairing handshake.
+                        DeviceSocketBinding.deactivate()
+                        // Re-enumerate: the old utun index may no longer identify the active tunnel.
+                        let deadline = Date().addingTimeInterval(3)
+                        var rebound = false
+                        while Date() < deadline {
+                            try Task.checkCancellation()
+                            if let fresh = try DeviceSocketBinding.activateIfAvailable(allowDirectHandshake: true) {
+                                debugLog("[VPNRecovery] rebound: interface=\(fresh.interfaceName), source=\(fresh.localIP), target=\(fresh.targetIP)")
+                                rebound = true
+                                break
+                            }
+                            try await Task.sleep(nanoseconds: 200_000_000)
+                        }
+                        guard rebound else {
+                            throw PreparedRefreshError.configuration("The recovery VPN did not return its expected local device address.")
+                        }
+                        try await minimuxerStart(pairing, preferred: .rppairing)
+                        (ready, lastReadinessError) = try await waitForDeviceReadiness()
+                        debugLog("[VPNRecovery] fresh handshake ready=\(ready)")
+                    } else {
+                        debugLog("[VPNRecovery] skipped: not configured or not an eligible cellular TCP failure")
+                    }
+                } catch {
+                    try Task.checkCancellation()
+                    debugLog("[VPNRecovery] recovery failed: \(error.localizedDescription)")
+                    throw PreparedRefreshError.configuration("The local device connection failed. Original: \(failure) Recovery: \(error.localizedDescription)")
                 }
-                try await Task.sleep(nanoseconds: 200_000_000)
             }
             guard ready else {
                 let reason = lastReadinessError.map { " Details: \($0.localizedDescription)" } ?? ""
@@ -187,6 +219,24 @@ actor PreparedRefreshManager {
             debugLog("[PreparedRefresh] Installation failed after \(completed) app(s): \(error.localizedDescription)")
             return "Refresh failed after \(completed) app(s): \(error.localizedDescription). Prepare a new refresh to retry."
         }
+    }
+
+    private func waitForDeviceReadiness() async throws -> (Bool, Error?) {
+        // TCP preflight is skipped only in the scoped experiment; readiness still pairs for real.
+        let deadline = Date().addingTimeInterval(5)
+        var lastError: Error?
+        while Date() < deadline {
+            try Task.checkCancellation()
+            await minimuxer.network.refreshEndpoint()
+            let result = await minimuxer.core.isReady(withNetworkCheck: false)
+            if case .success(true) = result { return (true, nil) }
+            if case .failure(let error) = result {
+                lastError = error
+                debugLog("[PreparedRefresh] Device readiness failed: \(error.localizedDescription)")
+            }
+            try await Task.sleep(nanoseconds: 200_000_000)
+        }
+        return (false, lastError)
     }
 
     private func verifyInstalledProfiles(_ expected: [ALTProvisioningProfile]) async throws {

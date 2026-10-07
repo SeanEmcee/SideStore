@@ -51,6 +51,8 @@ struct UserCustomizationsView: View {
     @State private var isFileSizeVerificationEnabled: Bool = UserDefaults.standard.isFileSizeVerificationEnabled
     @State private var permissionCheckingDisabled: Bool = UserDefaults.standard.permissionCheckingDisabled
     @State private var isCellularRefreshEnabled: Bool = UserDefaults.standard.isCellularRefreshEnabled
+    @State private var vpnRecoveryKey: String = LocalVPNRecoveryKey.load()
+    @State private var vpnRecoveryKeyStatus: String = LocalVPNRecoveryKey.load().isEmpty ? "Recovery disabled" : "Recovery key saved"
     @State private var turnOnDataShortcutName: String = UserDefaults.standard.turnOnDataShortcutName
     @State private var turnOffDataShortcutName: String = UserDefaults.standard.turnOffDataShortcutName
     @State private var turnOnBaseDelayText: String = {
@@ -614,6 +616,32 @@ struct UserCustomizationsView: View {
                         }
                     )
                 )
+
+                divider
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("VPN Recovery (Experimental)")
+                        .font(.system(size: 17, weight: .bold))
+                    Text("Retries the existing Refresh shortcut once after reapplying VPN settings. Cellular stays on. Wi-Fi skips recovery. Requires the matching recovery VPN profile.")
+                        .font(.system(size: 13))
+                        .foregroundColor(Color.interfaceSecondaryText(opacity: 0.7))
+                    SecureField("Paste recovery key", text: $vpnRecoveryKey)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                    SwiftUI.Button("Save Recovery Key") {
+                        if LocalVPNRecoveryKey.save(vpnRecoveryKey) {
+                            vpnRecoveryKeyStatus = vpnRecoveryKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "Recovery disabled" : "Recovery key saved"
+                        } else {
+                            vpnRecoveryKeyStatus = "Could not save. Paste the 64-character key from the recovery profile."
+                        }
+                    }
+                    Text(vpnRecoveryKeyStatus).font(.system(size: 13))
+                    Text("Clear the field and save to disable recovery. VPN traffic may pause briefly during recovery.")
+                        .font(.system(size: 13))
+                        .foregroundColor(Color.interfaceSecondaryText(opacity: 0.7))
+                }
+                .foregroundColor(Color.interfaceText)
+                .padding(16)
 
                 divider
 

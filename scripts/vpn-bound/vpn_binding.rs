@@ -69,23 +69,9 @@ pub(crate) async fn connect(
                         eprintln!(
                             "[VPNBound] {stage}: route-selected retry failed: {retry_error}; original scoped error: {error}"
                         );
-                        if !should_retry_with_route(target, binding, stage, &retry_error) {
-                            return Err(retry_error);
-                        }
-                        // Needs phone testing: prohibit cellular for this device socket only.
-                        // This does not change the radio, the device listener, or readiness.
-                        eprintln!(
-                            "[VPNBound] {stage}: retrying with cellular denied on the device socket; target={target}; source={}",
-                            binding.local_ip
-                        );
-                        let socket = cellular_denied_socket(binding).map_err(|policy_error| {
-                            eprintln!("[VPNBound] {stage}: cellular-denied socket setup failed: {policy_error}");
-                            policy_error
-                        })?;
-                        socket.connect(target).await.map_err(|policy_error| {
-                            eprintln!("[VPNBound] {stage}: cellular-denied retry failed: kind={:?}, os_code={:?}, message={policy_error}", policy_error.kind(), policy_error.raw_os_error());
-                            policy_error
-                        })?
+                        // The bg.24 phone capture proved denying cellular blocks this route.
+                        // Keep the real receiving-side refusal for provider recovery diagnostics.
+                        return Err(retry_error);
                     }
                 }
             }
@@ -129,7 +115,7 @@ fn source_bound_socket(binding: Binding) -> std::io::Result<tokio::net::TcpSocke
     Ok(socket)
 }
 
-#[cfg(target_vendor = "apple")]
+#[cfg(all(test, target_vendor = "apple"))]
 fn cellular_denied_socket(binding: Binding) -> std::io::Result<tokio::net::TcpSocket> {
     use std::os::fd::AsRawFd;
     // Apple XNU bsd/netinet/in_private.h: internal option, not a stable SDK API.
