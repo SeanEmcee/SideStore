@@ -102,6 +102,7 @@ actor PreparedRefreshManager {
                 throw PreparedRefreshError.configuration("No configured pairing file is available.")
             }
             syncMinimuxerBackendFromUserDefaults()
+            VPNInterfaceDiagnostics.log(phase: "before-handshake")
             let binding = try DeviceSocketBinding.activateIfAvailable(
                 allowDirectHandshake: PairingFileManager.shared.preferredProtocol == .rppairing)
             defer { DeviceSocketBinding.deactivate() }
@@ -128,6 +129,7 @@ actor PreparedRefreshManager {
                         isRemotePairing: PairingFileManager.shared.preferredProtocol == .rppairing,
                         failure: failure) {
                         debugLog("[VPNRecovery] controller acknowledged settings reapply; verifying a fresh handshake")
+                        VPNInterfaceDiagnostics.log(phase: "after-controller")
                         try Task.checkCancellation()
                         try await minimuxerStop() // Discard the old gateway adapter and pairing handshake.
                         DeviceSocketBinding.deactivate()
@@ -149,6 +151,7 @@ actor PreparedRefreshManager {
                         try await minimuxerStart(pairing, preferred: .rppairing)
                         (ready, lastReadinessError) = try await waitForDeviceReadiness()
                         debugLog("[VPNRecovery] fresh handshake ready=\(ready)")
+                        VPNInterfaceDiagnostics.log(phase: "after-recovery-handshake")
                     } else {
                         debugLog("[VPNRecovery] skipped: not configured or not an eligible cellular TCP failure")
                     }

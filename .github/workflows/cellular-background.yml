@@ -35,6 +35,10 @@ jobs:
         run: |
           swiftc -parse-as-library SideStore/Core/Operations/RefreshBundleResolver.swift scripts/tests/refresh-bundle-resolver.swift -o /tmp/refresh-bundle-tests
           /tmp/refresh-bundle-tests
+      - name: Test read-only VPN interface diagnostics
+        run: |
+          swiftc -parse-as-library SideStore/Core/Shortcuts/VPNInterfaceDiagnostics.swift scripts/tests/vpn-interface-diagnostics.swift -o /tmp/vpn-interface-tests
+          /tmp/vpn-interface-tests
       - name: Install packaging tools
         run: brew install ldid xcbeautify
       - name: Test first-launch theme application in UIKit
