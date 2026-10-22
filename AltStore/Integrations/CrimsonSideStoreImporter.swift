@@ -47,8 +47,9 @@ final class CrimsonSideStoreImporter: NSObject, UIDocumentPickerDelegate {
     }
 
     func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
-        pendingCompletion = nil
-        presenter = nil
+        // Always settle the completion. Otherwise ROMSpace retains a pending
+        // installer state forever after the system document picker is cancelled.
+        finish(.failure(CocoaError(.userCancelled)))
     }
 
     func documentPicker(_ controller: UIDocumentPickerViewController,
@@ -69,6 +70,12 @@ final class CrimsonSideStoreImporter: NSObject, UIDocumentPickerDelegate {
             .appendingPathComponent("crimson-selected-\(UUID().uuidString).ipa")
         do {
             defer { if scoped { selected.stopAccessingSecurityScopedResource() } }
+            let resource = try selected.resourceValues(forKeys: [.fileSizeKey, .isRegularFileKey])
+            guard resource.isRegularFile == true,
+                  let length = resource.fileSize,
+                  length > 0, length <= 2_000_000_000 else {
+                throw ImportError.invalidIPA
+            }
             try FileManager.default.copyItem(at: selected, to: staging)
         } catch {
             finish(.failure(error))
@@ -87,6 +94,7 @@ final class CrimsonSideStoreImporter: NSObject, UIDocumentPickerDelegate {
         alert.addAction(UIAlertAction(title: "Install with SideStore", style: .default) { [weak self, weak presenter] _ in
             guard let self, let presenter else {
                 try? FileManager.default.removeItem(at: staging)
+                self?.finish(.failure(ImportError.missingPresenter))
                 return
             }
             // IMPORTANT: this is SideStore's *real* native AppManager pipeline:
