@@ -30,6 +30,13 @@ class URLHandler {
         debugLog("[URLHandler] Matched host: \(host), path: \(url.path.lowercased())")
         
         switch host {
+        case "romspace":
+            // Launch-only handoff from the native ROMSpace Services panel.
+            // Do not accept IPA paths, signing requests, URLs or credentials
+            // from this route. SideStore keeps its own normal app UI.
+            return url.path.isEmpty &&
+                   (components.queryItems?.isEmpty ?? true)
+
         case "appbackupresponse":
             let result: Result<Void, Error>
             switch url.path.lowercased() {
